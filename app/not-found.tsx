@@ -1,22 +1,42 @@
 // =============================================================================
-// 404 page — shown when notFound() is called or a route doesn't match.
+// Not Found Page — 404
+// Custom 404 error page with helpful links
 // =============================================================================
 
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Home, Search } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
-      <h1 className="text-6xl font-bold tracking-tight text-foreground">404</h1>
-      <p className="text-lg text-muted-foreground">
-        {"The page you're looking for doesn't exist or has been moved."}
-      </p>
-      <Link
-        href="/"
-        className="mt-4 inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-      >
-        Back to Home
-      </Link>
-    </main>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+      <div className="space-y-6 max-w-md">
+        <h1 className="text-9xl font-bold tracking-tighter text-primary/20">404</h1>
+
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Page not found
+          </h2>
+          <p className="text-muted-foreground">
+            Sorry, we couldn&apos;t find the page you&apos;re looking for. It might have been removed, renamed, or doesn&apos;t exist.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+          <Button asChild size="lg">
+            <Link href="/">
+              <Home className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <Link href="#" onClick={() => window.history.back()}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Go Back
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
