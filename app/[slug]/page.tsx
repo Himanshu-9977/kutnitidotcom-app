@@ -6,7 +6,7 @@
 
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getArticleBySlug, getAllArticleSlugs, toArticleFull, getArticlesByCategory } from "@/lib/strapi";
+import { getArticleBySlug, getAllArticleSlugs, toArticleFull, getRecommendedArticles, toArticleMeta } from "@/lib/strapi";
 import { getArticleMetadata, getArticleJsonLd } from "@/lib/seo";
 import { ArticleHeader } from "@/components/articles/article-header";
 import { ArticleContent } from "@/components/articles/article-content";
@@ -15,6 +15,8 @@ import { RelatedArticles } from "@/components/articles/related-articles";
 import { SocialShare } from "@/components/shared/social-share";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { CommentSection } from "@/components/comments/comment-section";
+import { LikeButton } from "@/components/likes/like-button";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -44,26 +46,9 @@ export default async function ArticlePage({ params }: PageProps) {
     const article = toArticleFull(res.data[0]);
     const jsonLd = getArticleJsonLd(article);
 
-    // Fetch related articles from same category
-    const relatedRes = await getArticlesByCategory(article.categorySlug, 1);
-    const relatedArticles = relatedRes.data
-        .map((a) => ({
-            id: a.id,
-            title: a.title,
-            slug: a.slug,
-            excerpt: a.excerpt,
-            coverUrl: a.cover?.url || "",
-            coverAlt: a.cover?.alternativeText || "",
-            readingTime: a.readingTime,
-            featured: a.featured,
-            authorName: a.author?.name || "Unknown",
-            authorSlug: a.author?.slug || "",
-            categoryName: a.category?.name || "Uncategorized",
-            categorySlug: a.category?.slug || "",
-            tags: a.tags.map((t) => ({ name: t.name, slug: t.slug })),
-            publishedAt: a.publishedAt || "",
-        }))
-        .filter((a) => a.slug !== slug); // Exclude current article
+    // Fetch related articles (same category, excluding current)
+    const relatedRes = await getRecommendedArticles(slug, article.categorySlug);
+    const relatedArticles = relatedRes.data.map(toArticleMeta);
 
     const articleUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://kutnitidotcom.vercel.app"}/${article.slug}`;
 
@@ -121,6 +106,18 @@ export default async function ArticlePage({ params }: PageProps) {
                     bio={article.authorBio}
                     avatarUrl={article.authorAvatarUrl}
                 />
+
+                <Separator className="my-12" />
+
+                {/* Like Button */}
+                <div className="flex justify-center">
+                    <LikeButton articleId={String(article.id)} showCount={true} />
+                </div>
+
+                <Separator className="my-12" />
+
+                {/* Comments */}
+                <CommentSection articleId={String(article.id)} />
             </article>
 
             {/* Related Articles */}

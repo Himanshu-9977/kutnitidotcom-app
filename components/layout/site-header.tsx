@@ -10,7 +10,7 @@ import { getCategories } from "@/lib/strapi";
 import { MobileNav } from "./mobile-nav";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Search } from "@/components/shared/search";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogIn } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,8 +18,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
+import { UserMenu } from "@/components/auth/user-menu";
 
 export async function SiteHeader() {
+    // Get user session
+    const session = await auth();
+    
     // Fetch categories for navigation
     const categoriesRes = await getCategories();
     const categories = categoriesRes.data.map((cat) => ({
@@ -70,6 +75,18 @@ export async function SiteHeader() {
 
                     <Search />
                     <ThemeToggle />
+                    
+                    {/* Auth Menu */}
+                    {session?.user ? (
+                        <UserMenu user={session.user} />
+                    ) : (
+                        <Button asChild size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                            <Link href="/login">
+                                <LogIn className="mr-2 h-4 w-4" />
+                                Sign In
+                            </Link>
+                        </Button>
+                    )}
                 </nav>
 
                 {/* Mobile Theme Toggle */}

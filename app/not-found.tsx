@@ -4,8 +4,9 @@
 // =============================================================================
 
 import Link from "next/link";
+import { GoBackButton } from "@/components/shared/go-back-button";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home, Search } from "lucide-react";
+import { Home, Search } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -29,12 +30,7 @@ export default function NotFound() {
               Back to Home
             </Link>
           </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="#" onClick={() => window.history.back()}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Go Back
-            </Link>
-          </Button>
+          <GoBackButton />
         </div>
       </div>
     </div>

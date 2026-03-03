@@ -150,6 +150,29 @@ export async function getArticlesByCategory(
   });
 }
 
+/** Recommended articles (same category, excluding current) */
+export async function getRecommendedArticles(
+  currentSlug: string,
+  categorySlug: string
+): Promise<StrapiResponse<Article>> {
+  const query = buildQuery({
+    populate: ARTICLE_POPULATE,
+    sort: ["publishedAt:desc"],
+    pagination: { pageSize: 3 },
+    filters: {
+      slug: { $ne: currentSlug },
+      category: { slug: { $eq: categorySlug } },
+      publishedAt: { $notNull: true },
+    },
+  });
+
+  return fetchCollection<Article>("/articles", {
+    query,
+    revalidate: DEFAULT_REVALIDATE,
+    tags: ["articles", `category-${categorySlug}`],
+  });
+}
+
 /** Articles filtered by author slug */
 export async function getArticlesByAuthor(
   authorSlug: string,
@@ -309,4 +332,59 @@ export async function getAllTagSlugs(): Promise<string[]> {
 
   const res = await fetchCollection<Tag>("/tags", { query, tags: ["tags"] });
   return res.data.map((item) => item.slug);
+}
+
+// ---------------------------------------------------------------------------
+// Search Index queries (Client-side filtering)
+// ---------------------------------------------------------------------------
+
+/** Global search index for articles */
+export async function getSearchIndexArticles() {
+  const query = buildQuery({
+    fields: ["title", "slug"],
+    populate: {
+      category: { fields: ["name"] },
+    },
+    sort: ["publishedAt:desc"],
+    pagination: { pageSize: 1000 },
+    filters: {
+      publishedAt: { $notNull: true },
+    },
+  });
+
+  return fetchCollection<Article>("/articles", {
+    query,
+    revalidate: DEFAULT_REVALIDATE,
+    tags: ["articles"],
+  });
+}
+
+/** Global search index for categories */
+export async function getSearchIndexCategories() {
+  const query = buildQuery({
+    fields: ["name", "slug"],
+    sort: ["name:asc"],
+    pagination: { pageSize: 500 },
+  });
+
+  return fetchCollection<Category>("/categories", {
+    query,
+    revalidate: DEFAULT_REVALIDATE,
+    tags: ["categories"],
+  });
+}
+
+/** Global search index for authors */
+export async function getSearchIndexAuthors() {
+  const query = buildQuery({
+    fields: ["name", "slug"],
+    sort: ["name:asc"],
+    pagination: { pageSize: 500 },
+  });
+
+  return fetchCollection<Author>("/authors", {
+    query,
+    revalidate: DEFAULT_REVALIDATE,
+    tags: ["authors"],
+  });
 }

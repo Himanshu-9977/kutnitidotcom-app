@@ -42,70 +42,65 @@ export function ArticleList({
                 {articles.map((article) => (
                     <article
                         key={article.id}
-                        className="group flex flex-col gap-4 overflow-hidden rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-md sm:flex-row sm:gap-6"
+                        className="group flex flex-col gap-6 overflow-hidden py-6 transition-colors hover:bg-muted/30 sm:flex-row sm:gap-8 border-b border-border last:border-0"
                     >
                         {/* Thumbnail */}
                         <Link
                             href={`/${article.slug}`}
-                            className="relative aspect-video w-full shrink-0 overflow-hidden rounded-md sm:w-48"
+                            className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:w-64 lg:w-72"
                         >
                             {article.coverUrl ? (
                                 <Image
-
                                     src={article.coverUrl}
                                     alt={article.coverAlt || article.title}
                                     fill
-                                    sizes="(max-width: 640px) 100vw, 192px"
+                                    sizes="(max-width: 640px) 100vw, 300px"
                                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                             ) : (
-                                <div className="flex h-full items-center justify-center bg-muted">
+                                <div className="flex h-full items-center justify-center">
                                     <span className="text-xs text-muted-foreground">No image</span>
                                 </div>
                             )}
                         </Link>
 
                         {/* Content */}
-                        <div className="flex flex-1 flex-col gap-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Link
-                                    href={`/category/${article.categorySlug}`}
-                                    className="text-xs font-medium text-primary hover:underline"
-                                >
+                        <div className="flex flex-1 flex-col justify-start">
+                            <div className="mb-3 flex items-center gap-3">
+                                <Badge variant="outline" className="rounded-md border-primary/20 text-primary">
                                     {article.categoryName}
-                                </Link>
-                                {article.readingTime && (
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                        <Clock className="h-3 w-3" />
-                                        <span>{article.readingTime} min</span>
-                                    </div>
-                                )}
+                                </Badge>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                                    {article.readingTime && (
+                                        <>
+                                            <span>•</span>
+                                            <span className="flex items-center gap-1">
+                                                <Clock className="h-3 w-3" />
+                                                {article.readingTime} min
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
-                            <Link href={`/${article.slug}`}>
-                                <h3 className="line-clamp-2 text-xl font-semibold leading-tight text-card-foreground transition-colors group-hover:text-primary">
+                            <Link href={`/${article.slug}`} className="mb-3 block">
+                                <h3 className="line-clamp-2 text-2xl font-bold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary">
                                     {article.title}
                                 </h3>
                             </Link>
 
-                            <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                            <p className="mb-4 line-clamp-2 max-w-2xl text-base text-muted-foreground">
                                 {article.excerpt}
                             </p>
 
-                            <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+                            <div className="mt-auto flex items-center gap-2">
                                 <Link
                                     href={`/authors/${article.authorSlug}`}
-                                    className="text-xs font-medium text-muted-foreground hover:text-foreground"
+                                    className="text-sm font-medium text-foreground hover:underline"
                                 >
-                                    {article.authorName}
+                                    By {article.authorName}
                                 </Link>
-                                <span className="text-xs text-muted-foreground">
-                                    {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                                        month: "short",
-                                        day: "numeric",
-                                        year: "numeric",
-                                    })}
-                                </span>
                             </div>
                         </div>
                     </article>

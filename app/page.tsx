@@ -4,7 +4,8 @@
 // =============================================================================
 
 import { getHomepageArticles, getFeaturedArticles, toArticleMeta } from "@/lib/strapi";
-import { HeroSection, FeaturedGrid, ArticleList } from "@/components/shared";
+import { ArticleList } from "@/components/shared";
+import { HeroGrid } from "@/components/home/hero-grid";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { Separator } from "@/components/ui/separator";
 
@@ -17,27 +18,32 @@ export default async function HomePage() {
   const featured = featuredRes.data.map(toArticleMeta);
   const latest = latestRes.data.map(toArticleMeta);
 
-  // Separate hero article from featured grid
-  const [heroArticle, ...featuredGridArticles] = featured;
+  // 1. Separate hero article (first featured)
+  const [heroArticle, ...remainingFeatured] = featured;
+
+  // 2. Determine side articles for the grid (next 2 featured)
+  const sideArticles = remainingFeatured.slice(0, 2);
+
+  // 3. Deduplication (Removed per user request)
+  // const shownIds = new Set([heroArticle?.id, ...sideArticles.map(a => a.id)].filter(Boolean));
+  // const uniqueLatest = latest.filter((article) => !shownIds.has(article.id));
+  const uniqueLatest = latest;
+
+  // 4. Fallback for 'Featured Grid' if we have *more* than 3 featured articles
+  // (Optional: show them, or just let them be in 'latest' if they are there.
+  // For now, we'll just show the Hero Grid and then the Latest list.)
 
   return (
     <main>
-      {/* Hero Section */}
-      {heroArticle && <HeroSection article={heroArticle} />}
-
-      {/* Featured Articles Grid */}
-      {featuredGridArticles.length > 0 && (
-        <FeaturedGrid
-          articles={featuredGridArticles.slice(0, 3)}
-          title="Featured Articles"
-          showViewAll={false}
-        />
+      {/* Hero Grid Section */}
+      {heroArticle && (
+        <HeroGrid mainArticle={heroArticle} sideArticles={sideArticles} />
       )}
 
       <Separator className="mx-auto my-8 max-w-7xl" />
 
       {/* Latest Articles */}
-      <ArticleList articles={latest} title="Latest Articles" />
+      <ArticleList articles={uniqueLatest} title="Latest News" />
 
       {/* Newsletter Section */}
       <section className="bg-muted/30 py-16">
