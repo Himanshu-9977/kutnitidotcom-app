@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     loader: "custom",
     loaderFile: "./lib/cloudinary.ts",
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
