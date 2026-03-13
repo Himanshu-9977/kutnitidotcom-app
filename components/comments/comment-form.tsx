@@ -11,9 +11,19 @@ import { createComment } from "@/app/actions/comments"
 interface CommentFormProps {
   articleId: string
   onCommentAdded: () => void
+  onCommentOptimistic?: (comment: any) => void
+  user?: {
+    name: string
+    email: string
+  }
 }
 
-export function CommentForm({ articleId, onCommentAdded }: CommentFormProps) {
+export function CommentForm({
+  articleId,
+  onCommentAdded,
+  onCommentOptimistic,
+  user
+}: CommentFormProps) {
   const [content, setContent] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -26,6 +36,22 @@ export function CommentForm({ articleId, onCommentAdded }: CommentFormProps) {
     }
 
     setIsSubmitting(true)
+
+    // Optimistic Update
+    if (onCommentOptimistic && user) {
+      const tempId = `temp-${Date.now()}`
+      onCommentOptimistic({
+        id: tempId,
+        documentId: tempId,
+        content: content.trim(),
+        userName: user.name,
+        userEmail: user.email,
+        userId: "temp-user-id", // Not strictly needed for display
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      })
+      setContent("")
+    }
 
     try {
       const result = await createComment(articleId, content.trim())

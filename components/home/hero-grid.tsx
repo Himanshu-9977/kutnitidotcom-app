@@ -1,3 +1,4 @@
+"use client"
 
 import Link from "next/link";
 import Image from "next/image";
@@ -5,6 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
 import type { ArticleMeta } from "@/lib/types/strapi";
 import { cn } from "@/lib/utils";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import * as React from "react";
 
 interface HeroGridProps {
     mainArticle: ArticleMeta;
@@ -12,6 +20,23 @@ interface HeroGridProps {
 }
 
 export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
+    const [api, setApi] = React.useState<CarouselApi>();
+    const [current, setCurrent] = React.useState(0);
+
+    const plugin = React.useRef(
+        Autoplay({ delay: 4000, stopOnInteraction: false })
+    );
+
+    React.useEffect(() => {
+        if (!api) return;
+
+        setCurrent(api.selectedScrollSnap());
+
+        api.on("select", () => {
+            setCurrent(api.selectedScrollSnap());
+        });
+    }, [api]);
+
     return (
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
@@ -64,43 +89,86 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                     </Link>
                 </div>
 
-                {/* Side Articles (Span 4) */}
-                <div className="flex flex-col gap-6 lg:col-span-4 lg:h-[500px]">
-                    {sideArticles.map((article) => (
-                        <Link
-                            key={article.id}
-                            href={`/${article.slug}`}
-                            className="group relative flex flex-1 flex-col justify-end overflow-hidden rounded-2xl bg-muted aspect-2/1 lg:aspect-auto"
-                        >
-                            {/* Image Background */}
-                            <div className="absolute inset-0">
-                                {article.coverUrl ? (
-                                    <Image
-                                        src={article.coverUrl}
-                                        alt={article.coverAlt || article.title}
-                                        fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                        sizes="(max-width: 1024px) 100vw, 33vw"
-                                    />
-                                ) : (
-                                    <div className="h-full w-full bg-neutral-200 dark:bg-neutral-800" />
-                                )}
-                                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
-                            </div>
+                {/* Sidebar Carousel (Span 4) */}
+                <div className="lg:col-span-4 lg:flex lg:flex-col">
+                    <div className="mb-4 flex items-center justify-between border-b border-border pb-2 lg:mb-6">
+                        <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary">
+                            <span className="relative flex h-2 w-2">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                            </span>
+                            Trending Now
+                        </h2>
+                        <div className="flex gap-1.5">
+                            {sideArticles.map((_, index) => (
+                                <button
+                                    key={index}
+                                    className={cn(
+                                        "h-1.5 rounded-full transition-all duration-300",
+                                        index === current ? "w-4 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                                    )}
+                                    onClick={() => api?.scrollTo(index)}
+                                    aria-label={`Go to slide ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
 
-                            {/* Content */}
-                            <div className="relative p-5">
-                                <div className="mb-2 flex items-center gap-2 text-xs font-medium text-primary-foreground/90">
-                                    <div className="bg-primary/80 px-2 py-0.5 rounded text-white text-[10px] uppercase font-bold tracking-wider">
-                                        {article.categoryName}
-                                    </div>
-                                </div>
-                                <h3 className="line-clamp-2 text-lg font-bold text-white group-hover:underline decoration-white/50 underline-offset-4">
-                                    {article.title}
-                                </h3>
-                            </div>
-                        </Link>
-                    ))}
+                    <div className="relative flex-1 rounded-2xl bg-muted/20 p-2 lg:p-0 lg:bg-transparent">
+                        <Carousel
+                            setApi={setApi}
+                            plugins={[plugin.current]}
+                            className="h-full w-full"
+                            opts={{
+                                align: "start",
+                                loop: true,
+                            }}
+                        >
+                            <CarouselContent className="h-full">
+                                {sideArticles.map((article) => (
+                                    <CarouselItem key={article.id} className="h-full">
+                                        <Link
+                                            href={`/${article.slug}`}
+                                            className="group block h-full overflow-hidden rounded-2xl bg-background/50 transition-colors hover:bg-background lg:bg-muted/40 lg:hover:bg-muted/60"
+                                        >
+                                            {/* Image at Top */}
+                                            <div className="relative aspect-video w-full overflow-hidden">
+                                                {article.coverUrl ? (
+                                                    <Image
+                                                        src={article.coverUrl}
+                                                        alt={article.coverAlt || article.title}
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                        sizes="(max-width: 1024px) 100vw, 33vw"
+                                                    />
+                                                ) : (
+                                                    <div className="h-full w-full bg-neutral-200 dark:bg-neutral-800" />
+                                                )}
+                                                <div className="absolute top-3 left-3">
+                                                    <Badge variant="secondary" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                                                        {article.categoryName}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+
+                                            {/* Content Below */}
+                                            <div className="p-4 sm:p-5 lg:p-6">
+                                                <div className="mb-1 flex items-center gap-2 text-[10px] text-muted-foreground sm:text-xs">
+                                                    <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                                                </div>
+                                                <h3 className="line-clamp-2 text-base font-bold text-foreground transition-colors group-hover:text-primary sm:text-lg lg:text-xl">
+                                                    {article.title}
+                                                </h3>
+                                                <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
+                                                    {article.excerpt}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
+                    </div>
                 </div>
             </div>
         </section>

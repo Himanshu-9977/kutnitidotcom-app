@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/auth"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337"
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN
@@ -20,7 +20,7 @@ export async function getLikeStatus(articleId: string) {
         headers: {
           Authorization: `Bearer ${STRAPI_API_TOKEN}`,
         },
-        cache: "no-store",
+        next: { tags: [`likes-${articleId}`] },
       }
     )
 
@@ -42,7 +42,7 @@ export async function getLikeStatus(articleId: string) {
           headers: {
             Authorization: `Bearer ${STRAPI_API_TOKEN}`,
           },
-          cache: "no-store",
+          next: { tags: [`user-like-${session.user.id}-${articleId}`] },
         }
       )
 
@@ -115,7 +115,8 @@ export async function toggleLike(articleId: string) {
         throw new Error("Failed to unlike")
       }
 
-      revalidatePath(`/articles/${articleId}`) // Optional: revalidate the article page if needed
+      revalidateTag(`likes-${articleId}`, "max")
+      revalidateTag(`user-like-${session.user.id}-${articleId}`, "max")
       return { liked: false }
     } else {
       // Like: create a new like
@@ -141,7 +142,8 @@ export async function toggleLike(articleId: string) {
         throw new Error("Failed to like")
       }
 
-      revalidatePath(`/articles/${articleId}`) // Optional: revalidate the article page if needed
+      revalidateTag(`likes-${articleId}`, "max")
+      revalidateTag(`user-like-${session.user.id}-${articleId}`, "max")
       return { liked: true }
     }
   } catch (error) {

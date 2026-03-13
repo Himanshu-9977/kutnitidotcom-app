@@ -13,16 +13,24 @@ interface LikeButtonProps {
   articleId: string
   className?: string
   showCount?: boolean
+  initialLikes?: number
+  initialLiked?: boolean
 }
 
-export function LikeButton({ articleId, className, showCount = true }: LikeButtonProps) {
+export function LikeButton({
+  articleId,
+  className,
+  showCount = true,
+  initialLikes = 0,
+  initialLiked = false
+}: LikeButtonProps) {
   const { data: session } = useSession()
   const router = useRouter()
-  
-  const [liked, setLiked] = useState(false)
-  const [likeCount, setLikeCount] = useState(0)
+
+  const [liked, setLiked] = useState(initialLiked)
+  const [likeCount, setLikeCount] = useState(initialLikes)
   const [isLoading, setIsLoading] = useState(false)
-  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [isInitialLoading, setIsInitialLoading] = useState(false)
 
   // Fetch initial like status
   useEffect(() => {
@@ -30,7 +38,7 @@ export function LikeButton({ articleId, className, showCount = true }: LikeButto
       try {
         const data = await getLikeStatus(articleId)
         if (data.error) {
-           console.error("Error fetching like status:", data.error)
+          console.error("Error fetching like status:", data.error)
         } else {
           setLiked(data.userHasLiked)
           setLikeCount(data.likeCount)
@@ -66,7 +74,7 @@ export function LikeButton({ articleId, className, showCount = true }: LikeButto
       if (result.error) {
         throw new Error(result.error)
       }
-      
+
       if (result.liked) {
         toast.success("Article liked!")
       } else {

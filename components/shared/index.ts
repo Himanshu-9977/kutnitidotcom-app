@@ -9,3 +9,4 @@ export { SocialShare } from "./social-share";
 export { NewsletterForm } from "./newsletter-form";
 export { ThemeToggle } from "./theme-toggle";
 export { BackToTop } from "./back-to-top";
+export { AdBanner } from "./ad-banner";

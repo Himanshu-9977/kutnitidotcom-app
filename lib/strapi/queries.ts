@@ -62,7 +62,7 @@ export async function getFeaturedArticles(): Promise<StrapiResponse<Article>> {
       featured: { $eq: true },
       publishedAt: { $notNull: true },
     },
-    pagination: { pageSize: 5 },
+    pagination: { pageSize: 10 },
   });
 
   return fetchCollection<Article>("/articles", {

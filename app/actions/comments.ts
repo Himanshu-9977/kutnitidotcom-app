@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/auth"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337"
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN
@@ -18,7 +18,7 @@ export async function getComments(articleId: string) {
         headers: {
           Authorization: `Bearer ${STRAPI_API_TOKEN}`,
         },
-        cache: "no-store",
+        next: { tags: [`comments-${articleId}`] },
       }
     )
 
@@ -41,7 +41,7 @@ export async function getComments(articleId: string) {
         id: item.documentId || item.id
       }
     }) || []
-    
+
     return { data: comments }
   } catch (error) {
     console.error("Error fetching comments:", error)
@@ -86,7 +86,7 @@ export async function createComment(articleId: string, content: string) {
       throw new Error("Failed to create comment")
     }
 
-    revalidatePath(`/articles/${articleId}`) 
+    revalidateTag(`comments-${articleId}`, "max")
     return { success: true }
   } catch (error) {
     console.error("Error creating comment:", error)
@@ -106,7 +106,7 @@ export async function deleteComment(commentId: string) {
     // First, fetch the comment to verify ownership
     const url = `${STRAPI_URL}/api/comments/${commentId}?populate=article`
     console.log(`Fetching comment from: ${url}`)
-    
+
     const getResponse = await fetch(url, {
       headers: {
         Authorization: `Bearer ${STRAPI_API_TOKEN}`,
@@ -123,7 +123,7 @@ export async function deleteComment(commentId: string) {
 
     const commentData = await getResponse.json()
     const comment = commentData.data
-    
+
     // Normalize comment data (handle active/nested structure)
     const userId = comment.userId || comment.attributes?.userId
     const articleId = comment.article?.id || comment.attributes?.article?.data?.id
@@ -146,7 +146,7 @@ export async function deleteComment(commentId: string) {
     }
 
     if (articleId) {
-      revalidatePath(`/articles/${articleId}`)
+      revalidateTag(`comments-${articleId}`, "max")
     }
     return { success: true }
   } catch (error) {
@@ -185,7 +185,7 @@ export async function updateComment(commentId: string, content: string) {
 
     const commentData = await getResponse.json()
     const comment = commentData.data
-    
+
     // Normalize comment data
     const userId = comment.userId || comment.attributes?.userId
     const articleId = comment.article?.id || comment.attributes?.article?.data?.id
@@ -214,7 +214,7 @@ export async function updateComment(commentId: string, content: string) {
     }
 
     if (articleId) {
-      revalidatePath(`/articles/${articleId}`)
+      revalidateTag(`comments-${articleId}`, "max")
     }
     return { success: true }
   } catch (error) {

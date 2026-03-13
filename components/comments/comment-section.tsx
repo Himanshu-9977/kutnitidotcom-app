@@ -16,18 +16,20 @@ interface Comment {
   userName: string
   userEmail: string
   userId: string
+  documentId: string
   createdAt: string
   updatedAt: string
 }
 
 interface CommentSectionProps {
   articleId: string
+  initialComments?: Comment[]
 }
 
-export function CommentSection({ articleId }: CommentSectionProps) {
+export function CommentSection({ articleId, initialComments = [] }: CommentSectionProps) {
   const { data: session } = useSession()
-  const [comments, setComments] = useState<Comment[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [comments, setComments] = useState<Comment[]>(initialComments)
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchComments = async () => {
     try {
@@ -48,12 +50,18 @@ export function CommentSection({ articleId }: CommentSectionProps) {
     fetchComments()
   }, [articleId])
 
-  const handleCommentAdded = () => {
-    fetchComments()
+  const handleCommentAdded = (newComment: Comment) => {
+    setComments(prev => [newComment, ...prev])
   }
 
-  const handleCommentDeleted = () => {
-    fetchComments()
+  const handleCommentDeleted = (commentId: string) => {
+    setComments(prev => prev.filter(c => c.id !== commentId && c.documentId !== commentId))
+  }
+
+  const handleCommentUpdated = (commentId: string, content: string) => {
+    setComments(prev => prev.map(c =>
+      (c.id === commentId || c.documentId === commentId) ? { ...c, content } : c
+    ))
   }
 
   return (
@@ -67,7 +75,15 @@ export function CommentSection({ articleId }: CommentSectionProps) {
 
       {/* Comment Form */}
       {session ? (
-        <CommentForm articleId={articleId} onCommentAdded={handleCommentAdded} />
+        <CommentForm
+          articleId={articleId}
+          onCommentAdded={fetchComments} // Fallback for safety or keep for final sync
+          onCommentOptimistic={handleCommentAdded}
+          user={{
+            name: session.user?.name || "Anonymous",
+            email: session.user?.email || ""
+          }}
+        />
       ) : (
         <Card className="p-6 mb-6 text-center bg-muted/30">
           <p className="text-muted-foreground mb-4">
@@ -87,6 +103,7 @@ export function CommentSection({ articleId }: CommentSectionProps) {
         isLoading={isLoading}
         currentUserId={session?.user?.id}
         onCommentDeleted={handleCommentDeleted}
+        onCommentUpdated={handleCommentUpdated}
       />
     </div>
   )

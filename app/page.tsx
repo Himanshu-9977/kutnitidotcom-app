@@ -4,7 +4,7 @@
 // =============================================================================
 
 import { getHomepageArticles, getFeaturedArticles, toArticleMeta } from "@/lib/strapi";
-import { ArticleList } from "@/components/shared";
+import { ArticleList, AdBanner } from "@/components/shared";
 import { HeroGrid } from "@/components/home/hero-grid";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { Separator } from "@/components/ui/separator";
@@ -21,17 +21,11 @@ export default async function HomePage() {
   // 1. Separate hero article (first featured)
   const [heroArticle, ...remainingFeatured] = featured;
 
-  // 2. Determine side articles for the grid (next 2 featured)
-  const sideArticles = remainingFeatured.slice(0, 2);
+  // 2. sideArticles are now ALL remaining featured articles for the carousel
+  const sideArticles = remainingFeatured;
 
-  // 3. Deduplication (Removed per user request)
-  // const shownIds = new Set([heroArticle?.id, ...sideArticles.map(a => a.id)].filter(Boolean));
-  // const uniqueLatest = latest.filter((article) => !shownIds.has(article.id));
+  // 3. Deduplication
   const uniqueLatest = latest;
-
-  // 4. Fallback for 'Featured Grid' if we have *more* than 3 featured articles
-  // (Optional: show them, or just let them be in 'latest' if they are there.
-  // For now, we'll just show the Hero Grid and then the Latest list.)
 
   return (
     <main>
@@ -40,10 +34,32 @@ export default async function HomePage() {
         <HeroGrid mainArticle={heroArticle} sideArticles={sideArticles} />
       )}
 
+      {/* Primary Ad Space */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <AdBanner type="horizontal" />
+      </div>
+
       <Separator className="mx-auto my-8 max-w-7xl" />
 
-      {/* Latest Articles */}
-      <ArticleList articles={uniqueLatest} title="Latest News" />
+      {/* Latest Articles with Sidebar Ads */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          {/* Main Content: Latest News */}
+          <div className="lg:col-span-8">
+            <ArticleList articles={uniqueLatest} title="Latest News" />
+          </div>
+
+          {/* Sidebar: Ads */}
+          <aside className="space-y-8 py-12 lg:col-span-4 lg:block">
+            <div className="sticky top-24">
+              <AdBanner type="vertical" label="Sponsored Content" />
+              <div className="mt-8 border-t pt-8">
+                <AdBanner type="square" label="Space Available" className="bg-muted/10" />
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
 
       {/* Newsletter Section */}
       <section className="bg-muted/30 py-16">

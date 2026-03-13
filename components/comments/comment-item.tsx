@@ -26,10 +26,11 @@ interface Comment {
 interface CommentItemProps {
   comment: Comment
   isOwner: boolean
-  onDeleted: () => void
+  onDeleted: (id: string) => void
+  onUpdated: (id: string, content: string) => void
 }
 
-export function CommentItem({ comment, isOwner, onDeleted }: CommentItemProps) {
+export function CommentItem({ comment, isOwner, onDeleted, onUpdated }: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(comment.content)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -61,7 +62,7 @@ export function CommentItem({ comment, isOwner, onDeleted }: CommentItemProps) {
       }
 
       toast.success("Comment deleted")
-      onDeleted()
+      onDeleted(comment.id)
     } catch (error) {
       toast.error("Failed to delete comment")
       console.error("Error deleting comment:", error)
@@ -86,7 +87,7 @@ export function CommentItem({ comment, isOwner, onDeleted }: CommentItemProps) {
 
       toast.success("Comment updated")
       setIsEditing(false)
-      comment.content = editContent.trim()
+      onUpdated(comment.id, editContent.trim())
     } catch (error) {
       toast.error("Failed to update comment")
       console.error("Error updating comment:", error)

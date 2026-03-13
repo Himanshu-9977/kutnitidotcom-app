@@ -52,6 +52,15 @@ export default async function ArticlePage({ params }: PageProps) {
 
     const articleUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://kutnitidotcom.vercel.app"}/${article.slug}`;
 
+    const { getLikeStatus } = await import("@/app/actions/likes");
+    const { getComments } = await import("@/app/actions/comments");
+
+    // Fetch like status and comments in parallel
+    const [likeStatus, commentsData] = await Promise.all([
+        getLikeStatus(String(article.id)),
+        getComments(String(article.id))
+    ]);
+
     return (
         <>
             <script
@@ -111,13 +120,18 @@ export default async function ArticlePage({ params }: PageProps) {
 
                 {/* Like Button */}
                 <div className="flex justify-center">
-                    <LikeButton articleId={String(article.id)} showCount={true} />
+                    <LikeButton
+                        articleId={String(article.id)}
+                        showCount={true}
+                        initialLikes={likeStatus.likeCount}
+                        initialLiked={likeStatus.userHasLiked}
+                    />
                 </div>
 
                 <Separator className="my-12" />
 
                 {/* Comments */}
-                <CommentSection articleId={String(article.id)} />
+                <CommentSection articleId={String(article.id)} initialComments={commentsData.data} />
             </article>
 
             {/* Related Articles */}

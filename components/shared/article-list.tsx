@@ -38,7 +38,7 @@ export function ArticleList({
                 {title}
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-10 lg:space-y-6">
                 {articles.map((article) => (
                     <article
                         key={article.id}

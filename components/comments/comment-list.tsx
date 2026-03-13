@@ -20,7 +20,8 @@ interface CommentListProps {
   comments: Comment[]
   isLoading: boolean
   currentUserId?: string
-  onCommentDeleted: () => void
+  onCommentDeleted: (id: string) => void
+  onCommentUpdated: (id: string, content: string) => void
 }
 
 export function CommentList({
@@ -28,6 +29,7 @@ export function CommentList({
   isLoading,
   currentUserId,
   onCommentDeleted,
+  onCommentUpdated,
 }: CommentListProps) {
   if (isLoading) {
     return (
@@ -57,6 +59,7 @@ export function CommentList({
           comment={comment}
           isOwner={currentUserId === comment.userId}
           onDeleted={onCommentDeleted}
+          onUpdated={onCommentUpdated}
         />
       ))}
     </div>
