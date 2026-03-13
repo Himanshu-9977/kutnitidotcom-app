@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-// Middleware in Next.js runs in Edge Runtime and cannot use Node.js modules
-// Auth protection is now handled at the page level using server components
-export async function middleware(request: NextRequest) {
+// Proxy in Next.js 16 replaces the deprecated middleware convention
+// It runs in Edge Runtime and is intended for routing, redirects, and header manipulation
+export async function proxy(request: NextRequest) {
   // For now, just pass through all requests
   // Auth checks are performed in individual pages via server components
   return NextResponse.next()
