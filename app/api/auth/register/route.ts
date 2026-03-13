@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { z } from "zod"
-import Database from "better-sqlite3"
+import { Pool } from "pg"
 
-const db = new Database("./auth.db")
+const pool = new Pool({
+  connectionString: process.env.AUTH_DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+})
 
 // Registration validation schema
 const registerSchema = z.object({
@@ -24,8 +29,8 @@ export async function POST(request: NextRequest) {
     const validatedData = registerSchema.parse(body)
     
     // Check if user already exists
-    const existingUserStmt = db.prepare("SELECT * FROM users WHERE email = ?")
-    const existingUser = existingUserStmt.get(validatedData.email)
+    const res = await pool.query("SELECT * FROM users WHERE email = $1", [validatedData.email])
+    const existingUser = res.rows[0]
     
     if (existingUser) {
       return NextResponse.json(
@@ -39,17 +44,14 @@ export async function POST(request: NextRequest) {
     
     // Create user
     const id = crypto.randomUUID()
-    const stmt = db.prepare(
-      "INSERT INTO users (id, name, email, password, createdAt) VALUES (?, ?, ?, ?, ?)"
-    )
+    const query = 'INSERT INTO users (id, name, email, password, "createdAt") VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)'
     
-    stmt.run(
+    await pool.query(query, [
       id,
       validatedData.name,
       validatedData.email,
-      hashedPassword,
-      Math.floor(Date.now() / 1000)
-    )
+      hashedPassword
+    ])
     
     return NextResponse.json(
       {
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Validation error", details: error.errors },
+        { error: "Validation error", details: error.issues },
         { status: 400 }
       )
     }

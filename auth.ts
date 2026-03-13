@@ -3,119 +3,129 @@ import Google from "next-auth/providers/google"
 import Facebook from "next-auth/providers/facebook"
 import Credentials from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
-import Database from "better-sqlite3"
+import { Pool } from "pg"
 import { z } from "zod"
 
 // Database connection
-const db = new Database("./auth.db")
+const pool = new Pool({
+  connectionString: process.env.AUTH_DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+})
 
-// Initialize database tables
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    email TEXT UNIQUE NOT NULL,
-    emailVerified INTEGER,
-    image TEXT,
-    password TEXT,
-    createdAt INTEGER DEFAULT (strftime('%s', 'now'))
-  );
+// Initialize database tables for PostgreSQL
+const initDb = async () => {
+  const client = await pool.connect()
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        email TEXT UNIQUE NOT NULL,
+        "emailVerified" TIMESTAMP,
+        image TEXT,
+        password TEXT,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
 
-  CREATE TABLE IF NOT EXISTS accounts (
-    id TEXT PRIMARY KEY,
-    userId TEXT NOT NULL,
-    type TEXT NOT NULL,
-    provider TEXT NOT NULL,
-    providerAccountId TEXT NOT NULL,
-    refresh_token TEXT,
-    access_token TEXT,
-    expires_at INTEGER,
-    token_type TEXT,
-    scope TEXT,
-    id_token TEXT,
-    session_state TEXT,
-    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE(provider, providerAccountId)
-  );
+      CREATE TABLE IF NOT EXISTS accounts (
+        id TEXT PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        type TEXT NOT NULL,
+        provider TEXT NOT NULL,
+        "providerAccountId" TEXT NOT NULL,
+        refresh_token TEXT,
+        access_token TEXT,
+        expires_at INTEGER,
+        token_type TEXT,
+        scope TEXT,
+        id_token TEXT,
+        session_state TEXT,
+        CONSTRAINT fk_user FOREIGN KEY ("userId") REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE(provider, "providerAccountId")
+      );
 
-  CREATE TABLE IF NOT EXISTS sessions (
-    id TEXT PRIMARY KEY,
-    sessionToken TEXT UNIQUE NOT NULL,
-    userId TEXT NOT NULL,
-    expires INTEGER NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-  );
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        "sessionToken" TEXT UNIQUE NOT NULL,
+        "userId" TEXT NOT NULL,
+        expires TIMESTAMP NOT NULL,
+        CONSTRAINT fk_user_session FOREIGN KEY ("userId") REFERENCES users(id) ON DELETE CASCADE
+      );
 
-  CREATE TABLE IF NOT EXISTS verificationTokens (
-    identifier TEXT NOT NULL,
-    token TEXT UNIQUE NOT NULL,
-    expires INTEGER NOT NULL,
-    PRIMARY KEY (identifier, token)
-  );
-`)
+      CREATE TABLE IF NOT EXISTS "verificationTokens" (
+        identifier TEXT NOT NULL,
+        token TEXT UNIQUE NOT NULL,
+        expires TIMESTAMP NOT NULL,
+        PRIMARY KEY (identifier, token)
+      );
+    `)
+  } catch (err) {
+    console.error("Failed to initialize auth tables:", err)
+  } finally {
+    client.release()
+  }
+}
 
-// Simple SQLite adapter (manual implementation)
+// Trigger initialization
+initDb()
+
+// Simple PostgreSQL adapter
 const adapter = {
   async createUser(user: any) {
     const id = crypto.randomUUID()
-    const stmt = db.prepare(
-      "INSERT INTO users (id, name, email, emailVerified, image) VALUES (?, ?, ?, ?, ?)"
-    )
-    stmt.run(id, user.name, user.email, user.emailVerified ? Date.now() : null, user.image || null)
+    const query = 'INSERT INTO users (id, name, email, "emailVerified", image) VALUES ($1, $2, $3, $4, $5)'
+    await pool.query(query, [id, user.name, user.email, user.emailVerified || null, user.image || null])
     return { id, ...user, emailVerified: user.emailVerified || null }
   },
 
   async getUser(id: string) {
-    const stmt = db.prepare("SELECT * FROM users WHERE id = ?")
-    const user = stmt.get(id) as any
+    const res = await pool.query('SELECT * FROM users WHERE id = $1', [id])
+    const user = res.rows[0]
     if (!user) return null
-    return {
-      ...user,
-      emailVerified: user.emailVerified ? new Date(user.emailVerified * 1000) : null
-    }
+    return user
   },
 
   async getUserByEmail(email: string) {
-    const stmt = db.prepare("SELECT * FROM users WHERE email = ?")
-    const user = stmt.get(email) as any
+    const res = await pool.query('SELECT * FROM users WHERE email = $1', [email])
+    const user = res.rows[0]
     if (!user) return null
-    return {
-      ...user,
-      emailVerified: user.emailVerified ? new Date(user.emailVerified * 1000) : null
-    }
+    return user
   },
 
   async getUserByAccount({ providerAccountId, provider }: any) {
-    const stmt = db.prepare(
-      "SELECT u.* FROM users u JOIN accounts a ON u.id = a.userId WHERE a.provider = ? AND a.providerAccountId = ?"
-    )
-    const user = stmt.get(provider, providerAccountId) as any
+    const query = `
+      SELECT u.* 
+      FROM users u 
+      JOIN accounts a ON u.id = a."userId" 
+      WHERE a.provider = $1 AND a."providerAccountId" = $2
+    `
+    const res = await pool.query(query, [provider, providerAccountId])
+    const user = res.rows[0]
     if (!user) return null
-    return {
-      ...user,
-      emailVerified: user.emailVerified ? new Date(user.emailVerified * 1000) : null
-    }
+    return user
   },
 
   async updateUser(user: any) {
-    const stmt = db.prepare(
-      "UPDATE users SET name = ?, email = ?, emailVerified = ?, image = ? WHERE id = ?"
-    )
-    stmt.run(user.name, user.email, user.emailVerified ? Math.floor(user.emailVerified.getTime() / 1000) : null, user.image, user.id)
+    const query = 'UPDATE users SET name = $1, email = $2, "emailVerified" = $3, image = $4 WHERE id = $5'
+    await pool.query(query, [user.name, user.email, user.emailVerified || null, user.image, user.id])
     return user
   },
 
   async deleteUser(userId: string) {
-    const stmt = db.prepare("DELETE FROM users WHERE id = ?")
-    stmt.run(userId)
+    await pool.query('DELETE FROM users WHERE id = $1', [userId])
   },
 
   async linkAccount(account: any) {
     const id = crypto.randomUUID()
-    const stmt = db.prepare(
-      "INSERT INTO accounts (id, userId, type, provider, providerAccountId, refresh_token, access_token, expires_at, token_type, scope, id_token, session_state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    )
-    stmt.run(
+    const query = `
+      INSERT INTO accounts (
+        id, "userId", type, provider, "providerAccountId", 
+        refresh_token, access_token, expires_at, token_type, scope, id_token, session_state
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    `
+    await pool.query(query, [
       id,
       account.userId,
       account.type,
@@ -128,42 +138,43 @@ const adapter = {
       account.scope || null,
       account.id_token || null,
       account.session_state || null
-    )
+    ])
     return account
   },
 
   async unlinkAccount({ providerAccountId, provider }: any) {
-    const stmt = db.prepare("DELETE FROM accounts WHERE provider = ? AND providerAccountId = ?")
-    stmt.run(provider, providerAccountId)
+    await pool.query('DELETE FROM accounts WHERE provider = $1 AND "providerAccountId" = $2', [provider, providerAccountId])
   },
 
   async createSession({ sessionToken, userId, expires }: any) {
     const id = crypto.randomUUID()
-    const stmt = db.prepare(
-      "INSERT INTO sessions (id, sessionToken, userId, expires) VALUES (?, ?, ?, ?)"
-    )
-    stmt.run(id, sessionToken, userId, Math.floor(expires.getTime() / 1000))
+    const query = 'INSERT INTO sessions (id, "sessionToken", "userId", expires) VALUES ($1, $2, $3, $4)'
+    await pool.query(query, [id, sessionToken, userId, expires])
     return { sessionToken, userId, expires }
   },
 
   async getSessionAndUser(sessionToken: string) {
-    const stmt = db.prepare(
-      "SELECT s.*, u.* FROM sessions s JOIN users u ON s.userId = u.id WHERE s.sessionToken = ?"
-    )
-    const row = stmt.get(sessionToken) as any
+    const query = `
+      SELECT s.*, u.id as "uId", u.name, u.email, u."emailVerified", u.image, u.password
+      FROM sessions s 
+      JOIN users u ON s."userId" = u.id 
+      WHERE s."sessionToken" = $1
+    `
+    const res = await pool.query(query, [sessionToken])
+    const row = res.rows[0]
     if (!row) return null
 
     const session = {
       sessionToken: row.sessionToken,
       userId: row.userId,
-      expires: new Date(row.expires * 1000)
+      expires: row.expires
     }
 
     const user = {
-      id: row.userId,
+      id: row.uId,
       name: row.name,
       email: row.email,
-      emailVerified: row.emailVerified ? new Date(row.emailVerified * 1000) : null,
+      emailVerified: row.emailVerified,
       image: row.image
     }
 
@@ -171,43 +182,31 @@ const adapter = {
   },
 
   async updateSession({ sessionToken, ...session }: any) {
-    const stmt = db.prepare(
-      "UPDATE sessions SET userId = ?, expires = ? WHERE sessionToken = ?"
-    )
-    stmt.run(session.userId, Math.floor(session.expires.getTime() / 1000), sessionToken)
+    const query = 'UPDATE sessions SET "userId" = $1, expires = $2 WHERE "sessionToken" = $3'
+    await pool.query(query, [session.userId, session.expires, sessionToken])
     return { sessionToken, ...session }
   },
 
   async deleteSession(sessionToken: string) {
-    const stmt = db.prepare("DELETE FROM sessions WHERE sessionToken = ?")
-    stmt.run(sessionToken)
+    await pool.query('DELETE FROM sessions WHERE "sessionToken" = $1', [sessionToken])
   },
 
   async createVerificationToken({ identifier, expires, token }: any) {
-    const stmt = db.prepare(
-      "INSERT INTO verificationTokens (identifier, token, expires) VALUES (?, ?, ?)"
-    )
-    stmt.run(identifier, token, Math.floor(expires.getTime() / 1000))
+    const query = 'INSERT INTO "verificationTokens" (identifier, token, expires) VALUES ($1, $2, $3)'
+    await pool.query(query, [identifier, token, expires])
     return { identifier, token, expires }
   },
 
   async useVerificationToken({ identifier, token }: any) {
-    const stmt = db.prepare(
-      "SELECT * FROM verificationTokens WHERE identifier = ? AND token = ?"
-    )
-    const verificationToken = stmt.get(identifier, token) as any
+    const selectQuery = 'SELECT * FROM "verificationTokens" WHERE identifier = $1 AND token = $2'
+    const res = await pool.query(selectQuery, [identifier, token])
+    const verificationToken = res.rows[0]
     if (!verificationToken) return null
 
-    const deleteStmt = db.prepare(
-      "DELETE FROM verificationTokens WHERE identifier = ? AND token = ?"
-    )
-    deleteStmt.run(identifier, token)
+    const deleteQuery = 'DELETE FROM "verificationTokens" WHERE identifier = $1 AND token = $2'
+    await pool.query(deleteQuery, [identifier, token])
 
-    return {
-      identifier: verificationToken.identifier,
-      token: verificationToken.token,
-      expires: new Date(verificationToken.expires * 1000)
-    }
+    return verificationToken
   }
 }
 
@@ -248,8 +247,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = loginSchema.parse(credentials)
 
           // Find user by email
-          const stmt = db.prepare("SELECT * FROM users WHERE email = ?")
-          const user = stmt.get(email) as any
+          const res = await pool.query("SELECT * FROM users WHERE email = $1", [email])
+          const user = res.rows[0]
 
           if (!user || !user.password) {
             return null
