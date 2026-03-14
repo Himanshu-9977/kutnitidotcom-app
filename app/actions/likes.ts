@@ -13,9 +13,9 @@ export async function getLikeStatus(articleId: string) {
 
   try {
     // Get total like count for the article
-    console.log("Fetching like count from:", `${STRAPI_URL}/api/likes?filters[article][id][$eq]=${articleId}&pagination[pageSize]=0`)
+    console.log("Fetching like count from:", `${STRAPI_URL}/api/likes?filters[article][documentId][$eq]=${articleId}&pagination[pageSize]=0`)
     const countResponse = await fetch(
-      `${STRAPI_URL}/api/likes?filters[article][id][$eq]=${articleId}&pagination[pageSize]=0`,
+      `${STRAPI_URL}/api/likes?filters[article][documentId][$eq]=${articleId}&pagination[pageSize]=0`,
       {
         headers: {
           Authorization: `Bearer ${STRAPI_API_TOKEN}`,
@@ -37,7 +37,7 @@ export async function getLikeStatus(articleId: string) {
     let userHasLiked = false
     if (session?.user?.id) {
       const userLikeResponse = await fetch(
-        `${STRAPI_URL}/api/likes?filters[article][id][$eq]=${articleId}&filters[userId][$eq]=${session.user.id}`,
+        `${STRAPI_URL}/api/likes?filters[article][documentId][$eq]=${articleId}&filters[userId][$eq]=${session.user.id}`,
         {
           headers: {
             Authorization: `Bearer ${STRAPI_API_TOKEN}`,
@@ -80,7 +80,7 @@ export async function toggleLike(articleId: string) {
   try {
     // Check if user has already liked this article
     const existingLikeResponse = await fetch(
-      `${STRAPI_URL}/api/likes?filters[article][id][$eq]=${articleId}&filters[userId][$eq]=${session.user.id}`,
+      `${STRAPI_URL}/api/likes?filters[article][documentId][$eq]=${articleId}&filters[userId][$eq]=${session.user.id}`,
       {
         headers: {
           Authorization: `Bearer ${STRAPI_API_TOKEN}`,

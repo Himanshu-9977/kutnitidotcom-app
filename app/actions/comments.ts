@@ -13,7 +13,7 @@ export async function getComments(articleId: string) {
 
   try {
     const response = await fetch(
-      `${STRAPI_URL}/api/comments?filters[article][id][$eq]=${articleId}&sort=createdAt:desc&pagination[pageSize]=100`,
+      `${STRAPI_URL}/api/comments?filters[article][documentId][$eq]=${articleId}&sort=createdAt:desc&pagination[pageSize]=100`,
       {
         headers: {
           Authorization: `Bearer ${STRAPI_API_TOKEN}`,
@@ -126,7 +126,7 @@ export async function deleteComment(commentId: string) {
 
     // Normalize comment data (handle active/nested structure)
     const userId = comment.userId || comment.attributes?.userId
-    const articleId = comment.article?.id || comment.attributes?.article?.data?.id
+    const articleId = comment.article?.documentId || comment.article?.id || comment.attributes?.article?.data?.documentId || comment.attributes?.article?.data?.id
 
     // Check if the user owns this comment
     if (userId !== session.user.id) {
@@ -188,7 +188,7 @@ export async function updateComment(commentId: string, content: string) {
 
     // Normalize comment data
     const userId = comment.userId || comment.attributes?.userId
-    const articleId = comment.article?.id || comment.attributes?.article?.data?.id
+    const articleId = comment.article?.documentId || comment.article?.id || comment.attributes?.article?.data?.documentId || comment.attributes?.article?.data?.id
 
     // Check if the user owns this comment
     if (userId !== session.user.id) {

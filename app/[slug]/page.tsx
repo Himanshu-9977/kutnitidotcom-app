@@ -57,8 +57,8 @@ export default async function ArticlePage({ params }: PageProps) {
 
     // Fetch like status and comments in parallel
     const [likeStatus, commentsData] = await Promise.all([
-        getLikeStatus(String(article.id)),
-        getComments(String(article.id))
+        getLikeStatus(article.documentId),
+        getComments(article.documentId)
     ]);
 
     return (
@@ -121,7 +121,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 {/* Like Button */}
                 <div className="flex justify-center">
                     <LikeButton
-                        articleId={String(article.id)}
+                        articleId={article.documentId}
                         showCount={true}
                         initialLikes={likeStatus.likeCount}
                         initialLiked={likeStatus.userHasLiked}
@@ -131,7 +131,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 <Separator className="my-12" />
 
                 {/* Comments */}
-                <CommentSection articleId={String(article.id)} initialComments={commentsData.data} />
+                <CommentSection articleId={article.documentId} initialComments={commentsData.data} />
             </article>
 
             {/* Related Articles */}

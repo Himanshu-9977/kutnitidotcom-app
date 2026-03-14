@@ -68,6 +68,7 @@ export function transformSeo(seo: SeoComponent | null | undefined) {
 export function toArticleMeta(entity: StrapiEntity<Article>): ArticleMeta {
   return {
     id: entity.id,
+    documentId: entity.documentId,
     title: entity.title,
     slug: entity.slug,
     excerpt: entity.excerpt,

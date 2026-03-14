@@ -163,6 +163,7 @@ export interface Tag {
 
 export interface ArticleMeta {
   id: number;
+  documentId: string;
   title: string;
   slug: string;
   excerpt: string;
