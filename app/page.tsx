@@ -9,6 +9,9 @@ import { HeroGrid } from "@/components/home/hero-grid";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { Separator } from "@/components/ui/separator";
 
+// ISR: revalidate homepage every 2 minutes so breaking news surfaces quickly.
+export const revalidate = 120;
+
 export default async function HomePage() {
   const [featuredRes, latestRes] = await Promise.all([
     getFeaturedArticles(),

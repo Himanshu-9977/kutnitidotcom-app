@@ -2,6 +2,11 @@
 // Article detail page — /[slug]
 // ISR with on-demand revalidation via webhook.
 // generateStaticParams pre-builds known slugs at deploy time.
+//
+// IMPORTANT: We deliberately do NOT call getLikeStatus or getComments here.
+// Both functions call auth() which forces Next.js into dynamic (SSR) rendering,
+// destroying ISR and hitting Strapi on every visitor request.
+// LikeButton and CommentSection are client components that self-hydrate on mount.
 // =============================================================================
 
 import { notFound } from "next/navigation";
@@ -18,6 +23,10 @@ import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { CommentSection } from "@/components/comments/comment-section";
 import { LikeButton } from "@/components/likes/like-button";
 
+// ISR: revalidate at most once per hour. All visitors within that window
+// receive the same static HTML — zero extra edge requests per visitor.
+export const revalidate = 3600;
+
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
@@ -29,6 +38,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
+    // React.cache deduplicates this with the call below — single Strapi fetch.
     const res = await getArticleBySlug(slug);
     if (!res.data.length) return {};
     const article = toArticleFull(res.data[0]);
@@ -37,6 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
     const { slug } = await params;
+    // Deduplicated by React.cache — no extra Strapi round-trip vs generateMetadata.
     const res = await getArticleBySlug(slug);
 
     if (!res.data.length) {
@@ -52,14 +63,11 @@ export default async function ArticlePage({ params }: PageProps) {
 
     const articleUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://kutnitidotcom.vercel.app"}/${article.slug}`;
 
-    const { getLikeStatus } = await import("@/app/actions/likes");
-    const { getComments } = await import("@/app/actions/comments");
-
-    // Fetch like status and comments in parallel
-    const [likeStatus, commentsData] = await Promise.all([
-        getLikeStatus(article.documentId),
-        getComments(article.documentId)
-    ]);
+    // NOTE: Like status and comments are intentionally NOT fetched here.
+    // getLikeStatus() / getComments() call auth() which reads cookies, forcing
+    // Next.js into dynamic (SSR) rendering and costing 1 edge request per visitor.
+    // Both <LikeButton> and <CommentSection> are "use client" components whose
+    // useEffect hooks self-hydrate the real data after the static shell loads.
 
     return (
         <>
@@ -118,20 +126,20 @@ export default async function ArticlePage({ params }: PageProps) {
 
                 <Separator className="my-12" />
 
-                {/* Like Button */}
+                {/* Like Button — hydrates client-side via useEffect */}
                 <div className="flex justify-center">
                     <LikeButton
                         articleId={article.documentId}
                         showCount={true}
-                        initialLikes={likeStatus.likeCount}
-                        initialLiked={likeStatus.userHasLiked}
+                        initialLikes={0}
+                        initialLiked={false}
                     />
                 </div>
 
                 <Separator className="my-12" />
 
-                {/* Comments */}
-                <CommentSection articleId={article.documentId} initialComments={commentsData.data} />
+                {/* Comments — hydrates client-side via useEffect */}
+                <CommentSection articleId={article.documentId} />
             </article>
 
             {/* Related Articles */}

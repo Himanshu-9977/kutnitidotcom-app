@@ -19,6 +19,9 @@ import { ArticleList } from "@/components/shared/article-list";
 import { Pagination } from "@/components/shared/pagination";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 
+// ISR: revalidate category pages once per hour.
+export const revalidate = 3600;
+
 interface PageProps {
     params: Promise<{ slug: string }>;
     searchParams: Promise<{ page?: string }>;

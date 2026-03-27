@@ -4,6 +4,7 @@
 // Each function maps to a specific page or component data need.
 // =============================================================================
 
+import { cache } from "react";
 import { fetchCollection, fetchSingle } from "./client";
 import { SHORT_REVALIDATE, DEFAULT_REVALIDATE, ARTICLES_PER_PAGE } from "@/lib/constants";
 import type {
@@ -91,8 +92,9 @@ export async function getArticles(
   });
 }
 
-/** Single article by slug */
-export async function getArticleBySlug(
+/** Single article by slug — wrapped with React.cache to deduplicate the
+ *  generateMetadata() + page body calls that both fire within one render. */
+export const getArticleBySlug = cache(async function getArticleBySlug(
   slug: string
 ): Promise<StrapiResponse<Article>> {
   const query = buildQuery({
@@ -105,7 +107,7 @@ export async function getArticleBySlug(
     revalidate: DEFAULT_REVALIDATE,
     tags: ["articles", `article-${slug}`],
   });
-}
+});
 
 /** All article slugs — used by generateStaticParams */
 export async function getAllArticleSlugs(): Promise<string[]> {
@@ -239,8 +241,9 @@ export async function getCategories(): Promise<StrapiResponse<Category>> {
   });
 }
 
-/** Single category by slug */
-export async function getCategoryBySlug(
+/** Single category by slug — wrapped with React.cache to deduplicate the
+ *  generateMetadata() + page body calls that both fire within one render. */
+export const getCategoryBySlug = cache(async function getCategoryBySlug(
   slug: string
 ): Promise<StrapiResponse<Category>> {
   const query = buildQuery({
@@ -256,7 +259,7 @@ export async function getCategoryBySlug(
     revalidate: DEFAULT_REVALIDATE,
     tags: ["categories", `category-${slug}`],
   });
-}
+});
 
 /** All category slugs — used by generateStaticParams */
 export async function getAllCategorySlugs(): Promise<string[]> {
@@ -273,8 +276,9 @@ export async function getAllCategorySlugs(): Promise<string[]> {
 // Author queries
 // ---------------------------------------------------------------------------
 
-/** Single author by slug */
-export async function getAuthorBySlug(
+/** Single author by slug — wrapped with React.cache to deduplicate the
+ *  generateMetadata() + page body calls that both fire within one render. */
+export const getAuthorBySlug = cache(async function getAuthorBySlug(
   slug: string
 ): Promise<StrapiResponse<Author>> {
   const query = buildQuery({
@@ -291,7 +295,7 @@ export async function getAuthorBySlug(
     revalidate: DEFAULT_REVALIDATE,
     tags: ["authors", `author-${slug}`],
   });
-}
+});
 
 /** All author slugs — used by generateStaticParams */
 export async function getAllAuthorSlugs(): Promise<string[]> {
@@ -308,8 +312,9 @@ export async function getAllAuthorSlugs(): Promise<string[]> {
 // Tag queries
 // ---------------------------------------------------------------------------
 
-/** Single tag by slug */
-export async function getTagBySlug(
+/** Single tag by slug — wrapped with React.cache to deduplicate the
+ *  generateMetadata() + page body calls that both fire within one render. */
+export const getTagBySlug = cache(async function getTagBySlug(
   slug: string
 ): Promise<StrapiResponse<Tag>> {
   const query = buildQuery({
@@ -321,7 +326,7 @@ export async function getTagBySlug(
     revalidate: DEFAULT_REVALIDATE,
     tags: ["tags", `tag-${slug}`],
   });
-}
+});
 
 /** All tag slugs — used by generateStaticParams */
 export async function getAllTagSlugs(): Promise<string[]> {

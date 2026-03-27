@@ -13,18 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut, Heart } from "lucide-react"
+import { User, Settings, LogOut, Heart, LogIn } from "lucide-react"
+import { useSession } from "next-auth/react"
 
-interface UserMenuProps {
-  user: {
-    name?: string | null
-    email?: string | null
-    image?: string | null
-  }
-}
-
-export function UserMenu({ user }: UserMenuProps) {
+export function AuthMenu() {
   const router = useRouter()
+  const { data: session, status } = useSession()
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return "U"
@@ -41,13 +35,31 @@ export function UserMenu({ user }: UserMenuProps) {
     router.refresh()
   }
 
+  if (status === "loading") {
+    // Skeleton placeholder to prevent CLS
+    return <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+  }
+
+  if (!session?.user) {
+    return (
+      <Button asChild size="sm" className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+        <Link href="/login">
+          <LogIn className="mr-2 h-4 w-4" />
+          Sign In
+        </Link>
+      </Button>
+    )
+  }
+
+  const user = session.user
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
-            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white text-sm">
+            <AvatarFallback className="bg-linear-to-br from-purple-500 to-blue-500 text-white text-sm">
               {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
