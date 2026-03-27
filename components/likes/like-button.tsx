@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { Heart } from "lucide-react"
+import { useRouter, usePathname } from "next/navigation"
+import { Heart, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -26,6 +26,7 @@ export function LikeButton({
 }: LikeButtonProps) {
   const { data: session } = useSession()
   const router = useRouter()
+  const pathname = usePathname()
 
   const [liked, setLiked] = useState(initialLiked)
   const [likeCount, setLikeCount] = useState(initialLikes)
@@ -56,7 +57,7 @@ export function LikeButton({
   const handleLike = async () => {
     if (!session) {
       toast.error("Please sign in to like articles")
-      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`)
+      router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`)
       return
     }
 
