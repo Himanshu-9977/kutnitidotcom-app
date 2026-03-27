@@ -1,4 +1,3 @@
-```typescript
 "use client"
 
 import { useState, useEffect } from "react"
@@ -6,7 +5,7 @@ import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import { CommentForm } from "./comment-form"
 import { CommentList } from "./comment-list"
-import { getComments, addComment, deleteComment, updateComment } from "@/app/actions/comments"
+import { getComments } from "@/app/actions/comments"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -93,7 +92,7 @@ export function CommentSection({ articleId, initialComments = [] }: CommentSecti
             Please sign in to leave a comment
           </p>
           <Button asChild>
-            <Link href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}>
+            <Link href={"/login?callbackUrl=" + encodeURIComponent(pathname || "")}>
               Sign In to Comment
             </Link>
           </Button>

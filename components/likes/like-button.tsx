@@ -57,7 +57,7 @@ export function LikeButton({
   const handleLike = async () => {
     if (!session) {
       toast.error("Please sign in to like articles")
-      router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`)
+      router.push("/login?callbackUrl=" + encodeURIComponent(pathname || ""))
       return
     }
 
