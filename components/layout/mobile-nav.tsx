@@ -32,7 +32,7 @@ export function MobileNav({ categories = [] }: MobileNavProps) {
                     <SheetTitle>{SITE_NAME}</SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col space-y-4">
-                    <Link
+                    <Link prefetch={false}
                         href="/"
                         onClick={() => setOpen(false)}
                         className="text-lg font-medium transition-colors hover:text-primary"
@@ -48,7 +48,7 @@ export function MobileNav({ categories = [] }: MobileNavProps) {
                                 </p>
                                 <div className="flex flex-col space-y-3 pl-4">
                                     {categories.map((category) => (
-                                        <Link
+                                        <Link prefetch={false}
                                             key={category.slug}
                                             href={`/category/${category.slug}`}
                                             onClick={() => setOpen(false)}

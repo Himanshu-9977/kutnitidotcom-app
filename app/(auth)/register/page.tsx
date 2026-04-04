@@ -280,7 +280,7 @@ export default function RegisterPage() {
       <CardFooter className="flex flex-col space-y-2">
         <div className="text-sm text-muted-foreground text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+          <Link prefetch={false} href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
             Sign in
           </Link>
         </div>

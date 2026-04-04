@@ -21,23 +21,23 @@ export async function SiteFooter() {
                 <div className="grid gap-12 lg:grid-cols-4">
                     {/* Brand & Description */}
                     <div className="lg:col-span-1">
-                        <Link href="/" className="mb-4 inline-block text-2xl font-bold font-serif tracking-tight">
+                        <Link prefetch={false} href="/" className="mb-4 inline-block text-2xl font-bold font-serif tracking-tight">
                             {SITE_NAME}
                         </Link>
                         <p className="mb-6 text-muted-foreground">
                             {SITE_DESCRIPTION}
                         </p>
                         <div className="flex gap-4">
-                            <Link href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
+                            <Link prefetch={false} href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
                                 <Twitter className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                             </Link>
-                            <Link href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
+                            <Link prefetch={false} href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
                                 <Facebook className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                             </Link>
-                            <Link href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                            <Link prefetch={false} href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
                                 <Linkedin className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                             </Link>
-                            <Link href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+                            <Link prefetch={false} href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
                                 <Instagram className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                             </Link>
                         </div>
@@ -49,7 +49,7 @@ export async function SiteFooter() {
                         <ul className="space-y-3">
                             {categories.map((category) => (
                                 <li key={category.slug}>
-                                    <Link
+                                    <Link prefetch={false}
                                         href={`/category/${category.slug}`}
                                         className="text-muted-foreground transition-colors hover:text-primary"
                                     >
@@ -65,22 +65,22 @@ export async function SiteFooter() {
                         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Company</h3>
                         <ul className="space-y-3">
                             <li>
-                                <Link href="/about" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/about" className="text-muted-foreground transition-colors hover:text-primary">
                                     About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/contact" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/contact" className="text-muted-foreground transition-colors hover:text-primary">
                                     Contact
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/privacy" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/privacy" className="text-muted-foreground transition-colors hover:text-primary">
                                     Privacy Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/terms" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/terms" className="text-muted-foreground transition-colors hover:text-primary">
                                     Terms of Service
                                 </Link>
                             </li>

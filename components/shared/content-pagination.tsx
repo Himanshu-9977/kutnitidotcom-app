@@ -23,7 +23,7 @@ export function ContentPagination({
     return (
         <nav aria-label="Pagination" className="flex items-center justify-center gap-2 py-8">
             {currentPage > 1 && (
-                <Link
+                <Link prefetch={false}
                     href={`${basePath}?page=${currentPage - 1}`}
                     className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
@@ -31,7 +31,7 @@ export function ContentPagination({
                 </Link>
             )}
             {Array.from({ length: pageCount }, (_, i) => i + 1).map((page) => (
-                <Link
+                <Link prefetch={false}
                     key={page}
                     href={`${basePath}?page=${page}`}
                     aria-current={page === currentPage ? "page" : undefined}
@@ -44,7 +44,7 @@ export function ContentPagination({
                 </Link>
             ))}
             {currentPage < pageCount && (
-                <Link
+                <Link prefetch={false}
                     href={`${basePath}?page=${currentPage + 1}`}
                     className="inline-flex h-9 items-center rounded-md border border-border px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                 >

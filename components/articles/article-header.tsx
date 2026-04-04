@@ -21,7 +21,7 @@ export function ArticleHeader({ article, authorAvatarUrl }: ArticleHeaderProps) 
         <header className="space-y-6">
             {/* Category and Reading Time */}
             <div className="flex flex-wrap items-center gap-3">
-                <Link href={`/category/${article.categorySlug}`}>
+                <Link prefetch={false} href={`/category/${article.categorySlug}`}>
                     <Badge variant="default" className="hover:bg-primary/90">
                         {article.categoryName}
                     </Badge>
@@ -46,7 +46,7 @@ export function ArticleHeader({ article, authorAvatarUrl }: ArticleHeaderProps) 
 
             {/* Author and Date */}
             <div className="flex items-center gap-4">
-                <Link
+                <Link prefetch={false}
                     href={`/authors/${article.authorSlug}`}
                     className="flex items-center gap-3 group"
                 >
@@ -83,7 +83,7 @@ export function ArticleHeader({ article, authorAvatarUrl }: ArticleHeaderProps) 
             {article.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                     {article.tags.map((tag) => (
-                        <Link key={tag.slug} href={`/tag/${tag.slug}`}>
+                        <Link prefetch={false} key={tag.slug} href={`/tag/${tag.slug}`}>
                             <Badge variant="secondary" className="hover:bg-secondary/80">
                                 #{tag.name}
                             </Badge>

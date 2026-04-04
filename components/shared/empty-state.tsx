@@ -42,7 +42,7 @@ export function EmptyState({
 
             {actionLabel && actionHref && (
                 <Button asChild>
-                    <Link href={actionHref}>
+                    <Link prefetch={false} href={actionHref}>
                         {actionLabel}
                     </Link>
                 </Button>

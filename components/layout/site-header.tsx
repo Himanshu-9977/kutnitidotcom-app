@@ -34,14 +34,14 @@ export async function SiteHeader() {
                 {/* Logo */}
                 <div className="flex items-center gap-4">
                     <MobileNav categories={categories} />
-                    <Link href="/" className="text-xl font-bold font-serif tracking-tight text-foreground hover:text-primary transition-colors">
+                    <Link prefetch={false} href="/" className="text-xl font-bold font-serif tracking-tight text-foreground hover:text-primary transition-colors">
                         {SITE_NAME}
                     </Link>
                 </div>
 
                 {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-6 md:flex">
-                    <Link
+                    <Link prefetch={false}
                         href="/"
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
@@ -60,7 +60,7 @@ export async function SiteHeader() {
                             <DropdownMenuContent align="end" className="w-48">
                                 {categories.map((category) => (
                                     <DropdownMenuItem key={category.slug} asChild>
-                                        <Link href={`/category/${category.slug}`} className="cursor-pointer">
+                                        <Link prefetch={false} href={`/category/${category.slug}`} className="cursor-pointer">
                                             {category.name}
                                         </Link>
                                     </DropdownMenuItem>

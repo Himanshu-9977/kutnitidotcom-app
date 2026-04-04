@@ -21,7 +21,7 @@ export function AuthorBio({ name, slug, bio, avatarUrl }: AuthorBioProps) {
         <Card>
             <CardContent className="p-6">
                 <div className="flex flex-col gap-6 sm:flex-row">
-                    <Link href={`/authors/${slug}`} className="shrink-0">
+                    <Link prefetch={false} href={`/authors/${slug}`} className="shrink-0">
                         <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
                             {avatarUrl && (
                                 <AvatarImage src={avatarUrl} alt={name} />
@@ -35,7 +35,7 @@ export function AuthorBio({ name, slug, bio, avatarUrl }: AuthorBioProps) {
                     <div className="flex-1 space-y-3">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Written by</p>
-                            <Link href={`/authors/${slug}`} className="group">
+                            <Link prefetch={false} href={`/authors/${slug}`} className="group">
                                 <h3 className="text-2xl font-bold text-foreground transition-colors group-hover:text-primary">
                                     {name}
                                 </h3>
@@ -49,7 +49,7 @@ export function AuthorBio({ name, slug, bio, avatarUrl }: AuthorBioProps) {
                         )}
 
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`/authors/${slug}`} className="group">
+                            <Link prefetch={false} href={`/authors/${slug}`} className="group">
                                 View all articles
                                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Link>

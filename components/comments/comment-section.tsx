@@ -92,7 +92,7 @@ export function CommentSection({ articleId, initialComments = [] }: CommentSecti
             Please sign in to leave a comment
           </p>
           <Button asChild>
-            <Link href={"/login?callbackUrl=" + encodeURIComponent(pathname || "")}>
+            <Link prefetch={false} href={"/login?callbackUrl=" + encodeURIComponent(pathname || "")}>
               Sign In to Comment
             </Link>
           </Button>

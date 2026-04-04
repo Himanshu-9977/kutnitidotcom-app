@@ -81,7 +81,7 @@ export function AuthorHeader({
                             )}
 
                             {website && (
-                                <Link
+                                <Link prefetch={false}
                                     href={website}
                                     target="_blank"
                                     rel="noopener noreferrer"

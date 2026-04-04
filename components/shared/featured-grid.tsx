@@ -30,7 +30,7 @@ export function FeaturedGrid({
                 </h2>
                 {showViewAll && (
                     <Button variant="ghost" asChild>
-                        <Link href="/articles" className="group">
+                        <Link prefetch={false} href="/articles" className="group">
                             View All
                             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Link>

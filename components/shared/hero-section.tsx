@@ -26,7 +26,7 @@ export function HeroSection({ article }: HeroSectionProps) {
                             <Badge variant="default" className="text-xs font-semibold">
                                 Featured
                             </Badge>
-                            <Link
+                            <Link prefetch={false}
                                 href={`/category/${article.categorySlug}`}
                                 className="text-sm font-medium text-primary hover:underline"
                             >
@@ -40,7 +40,7 @@ export function HeroSection({ article }: HeroSectionProps) {
                             )}
                         </div>
 
-                        <Link href={`/${article.slug}`} className="group">
+                        <Link prefetch={false} href={`/${article.slug}`} className="group">
                             <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-5xl lg:text-6xl">
                                 {article.title}
                             </h1>
@@ -51,7 +51,7 @@ export function HeroSection({ article }: HeroSectionProps) {
                         </p>
 
                         <div className="flex items-center gap-4">
-                            <Link
+                            <Link prefetch={false}
                                 href={`/authors/${article.authorSlug}`}
                                 className="text-sm font-medium text-foreground hover:text-primary"
                             >
@@ -68,7 +68,7 @@ export function HeroSection({ article }: HeroSectionProps) {
 
                         <div className="pt-4">
                             <Button asChild size="lg" className="group">
-                                <Link href={`/${article.slug}`}>
+                                <Link prefetch={false} href={`/${article.slug}`}>
                                     Read Article
                                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </Link>
@@ -77,7 +77,7 @@ export function HeroSection({ article }: HeroSectionProps) {
                     </div>
 
                     {/* Image */}
-                    <Link
+                    <Link prefetch={false}
                         href={`/${article.slug}`}
                         className="group relative aspect-4/3 overflow-hidden rounded-2xl bg-muted shadow-xl lg:aspect-auto lg:min-h-[500px]"
                     >

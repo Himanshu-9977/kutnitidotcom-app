@@ -53,7 +53,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
                 asChild={currentPage > 1}
             >
                 {currentPage > 1 ? (
-                    <Link href={getPageUrl(currentPage - 1)} aria-label="Previous page">
+                    <Link prefetch={false} href={getPageUrl(currentPage - 1)} aria-label="Previous page">
                         <ChevronLeft className="h-4 w-4" />
                     </Link>
                 ) : (
@@ -89,7 +89,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
                             {isCurrentPage ? (
                                 <span>{pageNum}</span>
                             ) : (
-                                <Link href={getPageUrl(pageNum)} aria-label={`Go to page ${pageNum}`}>
+                                <Link prefetch={false} href={getPageUrl(pageNum)} aria-label={`Go to page ${pageNum}`}>
                                     {pageNum}
                                 </Link>
                             )}
@@ -106,7 +106,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
                 asChild={currentPage < totalPages}
             >
                 {currentPage < totalPages ? (
-                    <Link href={getPageUrl(currentPage + 1)} aria-label="Next page">
+                    <Link prefetch={false} href={getPageUrl(currentPage + 1)} aria-label="Next page">
                         <ChevronRight className="h-4 w-4" />
                     </Link>
                 ) : (

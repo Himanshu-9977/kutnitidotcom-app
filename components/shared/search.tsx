@@ -143,7 +143,7 @@ export function Search() {
                                     </h3>
                                     <div className="flex flex-col gap-1">
                                         {filteredResults.articles.map((article) => (
-                                            <Link
+                                            <Link prefetch={false}
                                                 key={`article-${article.documentId}`}
                                                 href={`/${article.slug}`}
                                                 onClick={() => setOpen(false)}
@@ -172,7 +172,7 @@ export function Search() {
                                     </h3>
                                     <div className="flex flex-col gap-1">
                                         {filteredResults.categories.map((category) => (
-                                            <Link
+                                            <Link prefetch={false}
                                                 key={`category-${category.documentId}`}
                                                 href={`/category/${category.slug}`}
                                                 onClick={() => setOpen(false)}
@@ -196,7 +196,7 @@ export function Search() {
                                     </h3>
                                     <div className="flex flex-col gap-1">
                                         {filteredResults.authors.map((author) => (
-                                            <Link
+                                            <Link prefetch={false}
                                                 key={`author-${author.documentId}`}
                                                 href={`/authors/${author.slug}`}
                                                 onClick={() => setOpen(false)}

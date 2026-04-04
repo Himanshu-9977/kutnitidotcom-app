@@ -25,7 +25,7 @@ export default function NotFound() {
 
         <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button asChild size="lg">
-            <Link href="/">
+            <Link prefetch={false} href="/">
               <Home className="mr-2 h-4 w-4" />
               Back to Home
             </Link>

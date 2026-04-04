@@ -22,7 +22,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
         <nav aria-label="Breadcrumb" className={className}>
             <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground sm:gap-2.5">
                 <li className="inline-flex items-center">
-                    <Link href="/" className="inline-flex items-center hover:text-foreground">
+                    <Link prefetch={false} href="/" className="inline-flex items-center hover:text-foreground">
                         <Home className="mr-2 h-4 w-4" />
                         Home
                     </Link>
@@ -41,7 +41,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
                                         {item.label}
                                     </span>
                                 ) : (
-                                    <Link
+                                    <Link prefetch={false}
                                         href={item.href}
                                         className="hover:text-foreground transition-colors"
                                     >
