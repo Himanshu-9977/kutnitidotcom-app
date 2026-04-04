@@ -43,7 +43,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
             <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
                 {/* Main Hero Article (Span 8) */}
                 <div className="group relative overflow-hidden rounded-2xl bg-muted lg:col-span-8 aspect-4/3 lg:aspect-auto lg:h-[500px]">
-                    <Link href={`/${mainArticle.slug}`} className="block h-full w-full">
+                    <Link href={`/${mainArticle.slug}`} prefetch={false} className="block h-full w-full">
                         {/* Image Background */}
                         <div className="absolute inset-0">
                             {mainArticle.coverUrl ? (
@@ -130,6 +130,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                                     <CarouselItem key={article.id} className="h-full">
                                         <Link
                                             href={`/${article.slug}`}
+                                            prefetch={false}
                                             className="group block h-full overflow-hidden rounded-2xl bg-background/50 transition-colors hover:bg-background lg:bg-muted/40 lg:hover:bg-muted/60"
                                         >
                                             {/* Image at Top */}
