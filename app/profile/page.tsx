@@ -44,7 +44,7 @@ export default async function ProfilePage() {
             {/* Avatar and Name */}
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={image || undefined} alt={name || "User"} />
+                <AvatarImage src={image || undefined} alt={name || "User"} referrerPolicy="no-referrer" />
                 <AvatarFallback className="text-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white">
                   {getInitials(name)}
                 </AvatarFallback>

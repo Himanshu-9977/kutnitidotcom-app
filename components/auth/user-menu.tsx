@@ -58,7 +58,7 @@ export function AuthMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+            <AvatarImage src={user.image || undefined} alt={user.name || "User"} referrerPolicy="no-referrer" />
             <AvatarFallback className="bg-linear-to-br from-purple-500 to-blue-500 text-white text-sm">
               {getInitials(user.name)}
             </AvatarFallback>

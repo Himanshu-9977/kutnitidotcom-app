@@ -47,6 +47,7 @@ export function ArticleList({
                         {/* Thumbnail */}
                         <Link
                             href={`/${article.slug}`}
+                            prefetch={false}
                             className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:w-64 lg:w-72"
                         >
                             {article.coverUrl ? (
@@ -84,7 +85,7 @@ export function ArticleList({
                                 </div>
                             </div>
 
-                            <Link href={`/${article.slug}`} className="mb-3 block">
+                            <Link href={`/${article.slug}`} prefetch={false} className="mb-3 block">
                                 <h3 className="line-clamp-2 text-2xl font-bold leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary">
                                     {article.title}
                                 </h3>
@@ -97,6 +98,7 @@ export function ArticleList({
                             <div className="mt-auto flex items-center gap-2">
                                 <Link
                                     href={`/authors/${article.authorSlug}`}
+                                    prefetch={false}
                                     className="text-sm font-medium text-foreground hover:underline"
                                 >
                                     By {article.authorName}

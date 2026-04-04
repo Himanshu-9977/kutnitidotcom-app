@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { z } from "zod"
-import { Pool } from "pg"
-
-const pool = new Pool({
-  connectionString: process.env.AUTH_DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-})
+import clientPromise from "../../../../lib/mongodb"
 
 // Registration validation schema
 const registerSchema = z.object({
@@ -28,9 +21,12 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validatedData = registerSchema.parse(body)
     
+    const client = await clientPromise
+    const db = client.db()
+    const usersCollection = db.collection("users")
+
     // Check if user already exists
-    const res = await pool.query("SELECT * FROM users WHERE email = $1", [validatedData.email])
-    const existingUser = res.rows[0]
+    const existingUser = await usersCollection.findOne({ email: validatedData.email })
     
     if (existingUser) {
       return NextResponse.json(
@@ -43,22 +39,19 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hash(validatedData.password, 12)
     
     // Create user
-    const id = crypto.randomUUID()
-    const query = 'INSERT INTO users (id, name, email, password, "createdAt") VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)'
-    
-    await pool.query(query, [
-      id,
-      validatedData.name,
-      validatedData.email,
-      hashedPassword
-    ])
+    const result = await usersCollection.insertOne({
+      name: validatedData.name,
+      email: validatedData.email,
+      password: hashedPassword,
+      createdAt: new Date()
+    })
     
     return NextResponse.json(
       {
         success: true,
         message: "User registered successfully",
         user: {
-          id,
+          id: result.insertedId.toString(),
           name: validatedData.name,
           email: validatedData.email
         }

@@ -17,7 +17,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article }: ArticleCardProps) {
     return (
         <article className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md">
-            <Link href={`/${article.slug}`} className="relative aspect-video overflow-hidden">
+            <Link href={`/${article.slug}`} prefetch={false} className="relative aspect-video overflow-hidden">
                 {article.coverUrl ? (
                     <Image
 
@@ -37,6 +37,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 <div className="flex items-center gap-2">
                     <Link
                         href={`/category/${article.categorySlug}`}
+                        prefetch={false}
                         className="text-xs font-medium text-primary hover:underline"
                     >
                         {article.categoryName}
@@ -47,7 +48,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                         </span>
                     )}
                 </div>
-                <Link href={`/${article.slug}`}>
+                <Link href={`/${article.slug}`} prefetch={false}>
                     <h3 className="line-clamp-2 text-balance text-lg font-semibold leading-snug text-card-foreground transition-colors group-hover:text-primary">
                         {article.title}
                     </h3>
@@ -58,6 +59,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 <div className="mt-auto flex items-center justify-between pt-3">
                     <Link
                         href={`/authors/${article.authorSlug}`}
+                        prefetch={false}
                         className="text-xs font-medium text-muted-foreground hover:text-foreground"
                     >
                         {article.authorName}
