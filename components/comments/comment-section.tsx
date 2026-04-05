@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import { CommentForm } from "./comment-form"
@@ -30,27 +30,25 @@ interface CommentSectionProps {
 export function CommentSection({ articleId, initialComments = [] }: CommentSectionProps) {
   const { data: session } = useSession()
   const pathname = usePathname()
+  // initialComments is pre-fetched server-side (ISR-cached). No client fetch on mount.
   const [comments, setComments] = useState<Comment[]>(initialComments)
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchComments = async () => {
+  // Called ONLY after a user mutation (post/edit/delete) to sync server state.
+  // Never called on mount — that would undo the ISR optimisation.
+  const refreshComments = async () => {
+    setIsLoading(true)
     try {
       const result = await getComments(articleId)
-      if (result.error) {
-        console.error("Error fetching comments:", result.error)
-      } else {
+      if (!result.error) {
         setComments(result.data as Comment[])
       }
     } catch (error) {
-      console.error("Error fetching comments:", error)
+      console.error("Error refreshing comments:", error)
     } finally {
       setIsLoading(false)
     }
   }
-
-  useEffect(() => {
-    fetchComments()
-  }, [articleId])
 
   const handleCommentAdded = (newComment: Comment) => {
     setComments(prev => [newComment, ...prev])
@@ -79,7 +77,7 @@ export function CommentSection({ articleId, initialComments = [] }: CommentSecti
       {session ? (
         <CommentForm
           articleId={articleId}
-          onCommentAdded={fetchComments} // Fallback for safety or keep for final sync
+          onCommentAdded={refreshComments} // Re-sync from server after a new comment is posted
           onCommentOptimistic={handleCommentAdded}
           user={{
             name: session.user?.name || "Anonymous",

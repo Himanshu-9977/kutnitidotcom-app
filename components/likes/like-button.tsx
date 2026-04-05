@@ -13,7 +13,9 @@ interface LikeButtonProps {
   articleId: string
   className?: string
   showCount?: boolean
+  /** Like count pre-fetched server-side — shown immediately, no client fetch needed */
   initialLikes?: number
+  /** Only meaningful when passed from a server that confirmed the user's liked state */
   initialLiked?: boolean
 }
 
@@ -22,7 +24,7 @@ export function LikeButton({
   className,
   showCount = true,
   initialLikes = 0,
-  initialLiked = false
+  initialLiked = false,
 }: LikeButtonProps) {
   const { data: session } = useSession()
   const router = useRouter()
@@ -31,28 +33,38 @@ export function LikeButton({
   const [liked, setLiked] = useState(initialLiked)
   const [likeCount, setLikeCount] = useState(initialLikes)
   const [isLoading, setIsLoading] = useState(false)
-  const [isInitialLoading, setIsInitialLoading] = useState(false)
+  // Only true while fetching user-specific liked status for authenticated users.
+  // Guests never enter this state — initialLiked = false is already correct for them.
+  const [isCheckingUserLike, setIsCheckingUserLike] = useState(false)
 
-  // Fetch initial like status
+  // ==========================================================================
+  // Fetch user-specific liked status ONLY when a session is confirmed.
+  // Guests: no fetch, no edge request — initialLiked (false) is used as-is.
+  // Authenticated users: 1 edge request to get their personal liked state.
+  // The like COUNT is already accurate from initialLikes (server-fetched, ISR).
+  // ==========================================================================
   useEffect(() => {
-    const fetchLikeStatus = async () => {
-      try {
-        const data = await getLikeStatus(articleId)
-        if (data.error) {
-          console.error("Error fetching like status:", data.error)
-        } else {
-          setLiked(data.userHasLiked)
-          setLikeCount(data.likeCount)
-        }
-      } catch (error) {
-        console.error("Error fetching like status:", error)
-      } finally {
-        setIsInitialLoading(false)
-      }
-    }
+    if (!session?.user?.id) return // guests: skip entirely
 
-    fetchLikeStatus()
-  }, [articleId])
+    let cancelled = false
+    setIsCheckingUserLike(true)
+
+    getLikeStatus(articleId).then((data) => {
+      if (cancelled) return
+      if (!data.error) {
+        setLiked(data.userHasLiked)
+        // Keep count from initialLikes unless the server returns something more
+        // current (e.g. article was liked by others since ISR was last revalidated)
+        setLikeCount(data.likeCount)
+      }
+    }).catch(() => {
+      // Non-fatal: button still works, just shows initialLiked = false
+    }).finally(() => {
+      if (!cancelled) setIsCheckingUserLike(false)
+    })
+
+    return () => { cancelled = true }
+  }, [articleId, session?.user?.id])
 
   const handleLike = async () => {
     if (!session) {
@@ -92,7 +104,9 @@ export function LikeButton({
     }
   }
 
-  if (isInitialLoading) {
+  // Show a subtle loading state only while fetching the user's liked status.
+  // The like count (from initialLikes) is always shown immediately — no blank flash.
+  if (isCheckingUserLike) {
     return (
       <Button
         variant="ghost"
@@ -100,8 +114,8 @@ export function LikeButton({
         className={cn("gap-2", className)}
         disabled
       >
-        <Heart className="h-4 w-4" />
-        {showCount && <span className="text-sm">...</span>}
+        <Loader2 className="h-4 w-4 animate-spin" />
+        {showCount && <span className="text-sm">{likeCount}</span>}
       </Button>
     )
   }

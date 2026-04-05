@@ -3,10 +3,12 @@
 // ISR with on-demand revalidation via webhook.
 // generateStaticParams pre-builds known slugs at deploy time.
 //
-// IMPORTANT: We deliberately do NOT call getLikeStatus or getComments here.
-// Both functions call auth() which forces Next.js into dynamic (SSR) rendering,
-// destroying ISR and hitting Strapi on every visitor request.
-// LikeButton and CommentSection are client components that self-hydrate on mount.
+// Rendering strategy:
+//   - Like COUNT and initial Comments are fetched server-side via Promise.all.
+//     getLikeCount() has no auth() call \u2014 fully ISR-safe, cached 3600s.
+//     getComments() has no auth() call \u2014 fully ISR-safe, cache-tagged per article.
+//   - User-specific liked state (userHasLiked) is fetched client-side inside
+//     LikeButton ONLY when a session exists \u2014 zero cost for guests.
 // =============================================================================
 
 import { notFound } from "next/navigation";
@@ -22,6 +24,8 @@ import { Separator } from "@/components/ui/separator";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { CommentSection } from "@/components/comments/comment-section";
 import { LikeButton } from "@/components/likes/like-button";
+import { getLikeCount } from "@/app/actions/likes";
+import { getComments } from "@/app/actions/comments";
 
 // ISR: revalidate at most once per hour. All visitors within that window
 // receive the same static HTML — zero extra edge requests per visitor.
@@ -57,17 +61,17 @@ export default async function ArticlePage({ params }: PageProps) {
     const article = toArticleFull(res.data[0]);
     const jsonLd = getArticleJsonLd(article);
 
-    // Fetch related articles (same category, excluding current)
-    const relatedRes = await getRecommendedArticles(slug, article.categorySlug);
+    // Fetch related articles, like count, and initial comments in parallel.
+    // All three are ISR-cached \u2014 zero edge requests per visitor within the window.
+    const [relatedRes, initialLikes, commentsRes] = await Promise.all([
+        getRecommendedArticles(slug, article.categorySlug),
+        getLikeCount(article.documentId),
+        getComments(article.documentId),
+    ]);
     const relatedArticles = relatedRes.data.map(toArticleMeta);
+    const initialComments = commentsRes.data ?? [];
 
     const articleUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://kutnitidotcom.vercel.app"}/${article.slug}`;
-
-    // NOTE: Like status and comments are intentionally NOT fetched here.
-    // getLikeStatus() / getComments() call auth() which reads cookies, forcing
-    // Next.js into dynamic (SSR) rendering and costing 1 edge request per visitor.
-    // Both <LikeButton> and <CommentSection> are "use client" components whose
-    // useEffect hooks self-hydrate the real data after the static shell loads.
 
     return (
         <>
@@ -126,20 +130,22 @@ export default async function ArticlePage({ params }: PageProps) {
 
                 <Separator className="my-12" />
 
-                {/* Like Button — hydrates client-side via useEffect */}
+                {/* Like Button — count pre-fetched server-side (ISR). */}
+                {/* User-specific liked state fetched client-side only when session exists. */}
                 <div className="flex justify-center">
                     <LikeButton
                         articleId={article.documentId}
                         showCount={true}
-                        initialLikes={0}
+                        initialLikes={initialLikes}
                         initialLiked={false}
                     />
                 </div>
 
                 <Separator className="my-12" />
 
-                {/* Comments — hydrates client-side via useEffect */}
-                <CommentSection articleId={article.documentId} />
+                {/* Comments — initial list pre-fetched server-side (ISR). */}
+                {/* Re-fetched from client only after user posts/edits/deletes a comment. */}
+                <CommentSection articleId={article.documentId} initialComments={initialComments} />
             </article>
 
             {/* Related Articles */}

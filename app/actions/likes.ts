@@ -1,11 +1,37 @@
 "use server"
 
 import { auth } from "@/auth"
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337"
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN
 
+// =============================================================================
+// getLikeCount — ISR-safe. No auth() call. Safe to call from static page bodies.
+// Returns only the total like count for an article; never checks user identity.
+// The result is Next.js-cache-tagged so toggleLike() can invalidate it on demand.
+// =============================================================================
+export async function getLikeCount(articleId: string): Promise<number> {
+  try {
+    const response = await fetch(
+      `${STRAPI_URL}/api/likes?filters[article][documentId][$eq]=${articleId}&pagination[pageSize]=0`,
+      {
+        headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
+        next: { tags: [`likes-${articleId}`], revalidate: 3600 },
+      }
+    )
+    if (!response.ok) return 0
+    const data = await response.json()
+    return data.meta?.pagination?.total ?? 0
+  } catch {
+    return 0
+  }
+}
+
+// =============================================================================
+// getLikeStatus — Requires auth(). Only called client-side from LikeButton
+// when a session is confirmed to exist. Returns both count + userHasLiked.
+// =============================================================================
 export async function getLikeStatus(articleId: string) {
   console.log("getLikeStatus called for:", articleId)
   const session = await auth()

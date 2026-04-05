@@ -9,6 +9,7 @@ import { BackToTop } from "@/components/shared/back-to-top"
 import { Toaster } from "@/components/ui/sonner"
 import { getDefaultMetadata } from "@/lib/seo"
 import "./globals.css"
+import { auth } from "@/auth"
 
 const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const _merriweather = Merriweather({
@@ -25,15 +26,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen font-sans antialiased">
-        <SessionProvider>
+        <SessionProvider session={session} >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
