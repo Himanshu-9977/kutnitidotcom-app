@@ -8,6 +8,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
+import { KutnitiLogo } from "@/components/brand/kutniti-logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { SITE_NAME } from "@/lib/constants";
@@ -29,7 +30,10 @@ export function MobileNav({ categories = [] }: MobileNavProps) {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px] text-center">
                 <SheetHeader>
-                    <SheetTitle>{SITE_NAME}</SheetTitle>
+                    <SheetTitle className="flex flex-col items-center gap-2 text-primary">
+                        <KutnitiLogo className="size-16" />
+                        <span className="font-serif text-3xl font-bold leading-none">{SITE_NAME}</span>
+                    </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col space-y-4">
                     <Link prefetch={false}

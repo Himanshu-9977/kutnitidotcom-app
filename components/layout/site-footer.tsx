@@ -4,6 +4,7 @@
 // =============================================================================
 
 import Link from "next/link";
+import { KutnitiLogo } from "@/components/brand/kutniti-logo";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getCategories } from "@/lib/strapi";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
@@ -29,11 +30,9 @@ export async function SiteFooter() {
                 <div className="grid gap-10 py-12 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr] lg:gap-12">
                     <div>
                         <Link prefetch={false} href="/" className="mb-4 inline-flex items-center gap-3">
-                            <span className="grid size-10 place-items-center rounded-md bg-primary-foreground font-serif text-lg font-bold text-primary">
-                                K
-                            </span>
+                            <KutnitiLogo className="size-12" />
                             <span className="grid leading-none">
-                                <span className="font-serif text-3xl font-bold tracking-tight">
+                                <span className="font-serif text-3xl font-bold">
                                     {SITE_NAME}
                                 </span>
                                 <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-primary-foreground/65">

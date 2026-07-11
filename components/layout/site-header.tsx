@@ -9,6 +9,7 @@ import { ChevronDown, TrendingUp } from "lucide-react";
 import { SITE_NAME } from "@/lib/constants";
 import { getCategories } from "@/lib/strapi";
 import { AuthMenu } from "@/components/auth/user-menu";
+import { KutnitiLogo } from "@/components/brand/kutniti-logo";
 import { Search } from "@/components/shared/search";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -66,9 +67,9 @@ export async function SiteHeader() {
 
     return (
         <header className="relative z-50 w-full border-b border-border bg-background">
-            <div className="border-b border-border bg-secondary/30">
+            <div className="border-b border-border bg-secondary/60">
                 <div className="mx-auto flex h-28 max-w-[1500px] items-center justify-center px-4 sm:h-40 lg:h-64">
-                    <div className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/65">
+                    <div className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
                         Advertisement
                     </div>
                 </div>
@@ -97,7 +98,7 @@ export async function SiteHeader() {
                     </div>
 
                     <div className="text-center">
-                        <nav className="mb-3 flex items-center justify-center gap-5 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                        <nav className="mb-3 flex items-center justify-center gap-5 text-[11px] font-bold uppercase tracking-[0.18em] text-primary/75">
                             {editionLinks.map((link) => (
                                 <Link
                                     key={link.label}
@@ -112,10 +113,11 @@ export async function SiteHeader() {
                         <Link
                             prefetch={false}
                             href="/"
-                            className="inline-grid text-center text-foreground transition-colors hover:text-accent"
+                            className="inline-flex flex-col items-center text-center text-primary transition-colors hover:text-accent"
                             aria-label="KUTNITI home"
                         >
-                            <span className="font-serif text-5xl font-black leading-none tracking-tight sm:text-6xl lg:text-7xl">
+                            <KutnitiLogo className="mb-3 size-14 drop-shadow-sm sm:size-20 lg:size-24" />
+                            <span className="font-serif text-4xl font-black leading-none sm:text-6xl lg:text-7xl">
                                 {SITE_NAME}
                             </span>
                             <span className="mt-2 text-[10px] font-bold uppercase tracking-[0.28em] text-muted-foreground">
@@ -126,7 +128,7 @@ export async function SiteHeader() {
 
                     <div className="hidden justify-self-end lg:block">
                         <div className="flex items-center justify-end gap-3">
-                            <Button asChild size="sm" className="rounded-md bg-primary px-4 text-xs font-bold uppercase tracking-[0.08em] hover:bg-accent">
+                            <Button asChild size="sm" className="rounded-md bg-primary px-4 text-xs font-bold uppercase tracking-[0.08em] hover:bg-accent hover:text-accent-foreground">
                                 <Link href="/#briefing" prefetch={false}>
                                     Subscribe
                                 </Link>
@@ -151,7 +153,7 @@ export async function SiteHeader() {
                 </div>
             </div>
 
-            <div className="border-b-2 border-foreground bg-background">
+            <div className="border-b-2 border-primary bg-background">
                 <nav
                     className="mx-auto flex h-12 max-w-[1500px] items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:justify-center lg:px-8"
                     aria-label="Primary sections"
@@ -159,7 +161,7 @@ export async function SiteHeader() {
                     <Link
                         prefetch={false}
                         href="/"
-                        className="whitespace-nowrap px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:text-accent"
+                        className="whitespace-nowrap bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                         Home
                     </Link>
