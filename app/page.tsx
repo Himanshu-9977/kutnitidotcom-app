@@ -17,6 +17,7 @@ import { BriefingDesk } from "@/components/home/briefing-desk";
 import { HeroGrid } from "@/components/home/hero-grid";
 import { AdBanner, ArticleList, NewsletterForm } from "@/components/shared";
 import type { ArticleMeta } from "@/lib/types/strapi";
+import { rssNews } from "@/lib/rss-news";
 
 export const revalidate = 120;
 
@@ -81,8 +82,8 @@ async function getHomeData() {
 
 export default async function HomePage() {
   const { featured, latest, categories } = await getHomeData();
-  const allArticles = dedupeArticles([...featured, ...latest]);
-  const heroArticle = featured[0] ?? latest[0];
+  const allArticles = dedupeArticles([...rssNews, ...featured, ...latest]);
+  const heroArticle = featured[0] ?? latest[0] ?? rssNews[0];
 
   if (!heroArticle) {
     return (
@@ -105,7 +106,7 @@ export default async function HomePage() {
     ...latest.filter((article) => article.documentId !== heroArticle.documentId),
   ]).slice(0, 5);
 
-  const latestArticles = dedupeArticles(latest)
+  const latestArticles = dedupeArticles([...rssNews, ...latest])
     .filter((article) => article.documentId !== heroArticle.documentId)
     .slice(0, 8);
 
