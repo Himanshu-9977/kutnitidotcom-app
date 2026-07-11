@@ -52,7 +52,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
 
     return (
         <section className="bg-background">
-            <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
                 <div className="border-y-2 border-foreground py-5 text-center">
                     <p className="text-base text-foreground sm:text-lg">
                         These top stories are <strong>free to read.</strong>
@@ -60,9 +60,9 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                     <span className="mx-auto mt-3 block h-0.5 w-24 bg-accent" />
                 </div>
 
-                <div className="grid gap-5 border-b border-border py-6 lg:grid-cols-[minmax(0,1fr)_430px]">
-                    <article className="grid gap-5 border border-border bg-card p-5 lg:grid-cols-[0.78fr_1.22fr]">
-                        <div className="flex flex-col justify-between gap-5">
+                <div className="grid min-w-0 gap-5 border-b border-border py-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,430px)]">
+                    <article className="grid min-w-0 gap-5 border border-border bg-card p-5 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
+                        <div className="flex min-w-0 flex-col justify-between gap-5">
                             <div>
                                 <div className="mb-3 flex flex-wrap items-center gap-2">
                                     <Badge className="rounded-md bg-accent text-accent-foreground hover:bg-accent">
@@ -114,7 +114,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                         <Link
                             href={`/${mainArticle.slug}`}
                             prefetch={false}
-                            className="group relative min-h-[260px] overflow-hidden bg-muted sm:min-h-[380px] lg:min-h-[430px]"
+                            className="group relative min-h-[260px] min-w-0 overflow-hidden bg-muted sm:min-h-[380px] lg:min-h-[430px]"
                         >
                             {mainArticle.coverUrl ? (
                                 <Image
@@ -135,8 +135,8 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                         </Link>
                     </article>
 
-                    <aside className="grid gap-5 border-l-0 border-border lg:border-l lg:pl-5">
-                        <div className="flex items-center justify-between border-b border-border pb-3">
+                    <aside className="grid min-w-0 gap-5 overflow-hidden border-l-0 border-border lg:border-l lg:pl-5">
+                        <div className="flex min-w-0 items-center justify-between gap-3 border-b border-border pb-3">
                             <h2 className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-foreground">
                                 <TrendingUp className="h-4 w-4 text-accent" />
                                 Trending
@@ -161,16 +161,16 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                         <Carousel
                             setApi={setApi}
                             plugins={[plugin.current]}
-                            className="w-full"
+                            className="min-w-0 w-full overflow-hidden"
                             opts={{ align: "start", loop: carouselArticles.length > 1 }}
                         >
-                            <CarouselContent>
+                            <CarouselContent className="min-w-0">
                                 {carouselArticles.map((article) => (
-                                    <CarouselItem key={article.id}>
+                                    <CarouselItem key={article.id} className="min-w-0">
                                         <Link
                                             href={`/${article.slug}`}
                                             prefetch={false}
-                                            className="group grid overflow-hidden bg-card"
+                                            className="group grid min-w-0 overflow-hidden bg-card"
                                         >
                                             <div className="relative aspect-video overflow-hidden bg-muted">
                                                 {article.coverUrl ? (
@@ -190,7 +190,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                                                     </span>
                                                 </span>
                                             </div>
-                                            <div className="border-x border-b border-border p-4">
+                                            <div className="min-w-0 border-x border-b border-border p-4">
                                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
                                                     {article.categoryName}
                                                 </p>
@@ -211,7 +211,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                                         key={article.id}
                                         href={`/${article.slug}`}
                                         prefetch={false}
-                                        className="group grid gap-3 py-4 sm:grid-cols-[96px_minmax(0,1fr)]"
+                                        className="group grid min-w-0 gap-3 py-4 sm:grid-cols-[96px_minmax(0,1fr)]"
                                     >
                                         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                                             {article.coverUrl ? (
@@ -226,7 +226,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
                                                 <div className="h-full w-full bg-secondary" />
                                             )}
                                         </div>
-                                        <div>
+                                        <div className="min-w-0">
                                             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                                                 {article.categoryName}
                                             </p>

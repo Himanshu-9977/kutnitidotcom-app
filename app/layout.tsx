@@ -34,7 +34,7 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${_inter.variable} ${_merriweather.variable} min-h-screen font-sans antialiased`}>
+      <body className={`${_inter.variable} ${_merriweather.variable} min-h-screen overflow-x-clip font-sans antialiased`}>
         <SessionProvider session={session} >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-screen flex-col">
