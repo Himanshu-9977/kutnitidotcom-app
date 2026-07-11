@@ -4,7 +4,7 @@
 // =============================================================================
 
 import Link from "next/link";
-import { ArrowRight, BarChart3, Globe2, Newspaper, ShieldCheck } from "lucide-react";
+import { ArrowRight, BarChart3, Newspaper, ShieldCheck } from "lucide-react";
 
 import {
   getCategories,
@@ -121,23 +121,25 @@ export default async function HomePage() {
     <div className="bg-background">
       <HeroGrid mainArticle={heroArticle} sideArticles={sideArticles} />
 
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-0 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
+      <section className="border-b border-border bg-secondary/35">
+        <div className="mx-auto flex max-w-[1500px] items-stretch overflow-x-auto px-4 sm:px-6 lg:px-8">
           {[
             { label: "Coverage desks", value: categories.length || "Live", icon: Newspaper },
-            { label: "Latest stories", value: latest.length || allArticles.length, icon: BarChart3 },
+            { label: "Latest stories", value: allArticles.length, icon: BarChart3 },
             { label: "Featured analysis", value: featured.length || "Curated", icon: ShieldCheck },
-            { label: "Regional lens", value: "NPT", icon: Globe2 },
           ].map((item) => (
-            <div key={item.label} className="border-r border-border px-4 py-5 last:border-r-0">
-              <div className="flex items-center gap-3">
-                <item.icon className="h-5 w-5 text-accent" />
-                <div>
-                  <div className="text-2xl font-bold text-foreground">{item.value}</div>
-                  <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                    {item.label}
-                  </div>
-                </div>
+            <div
+              key={item.label}
+              className="flex min-w-[210px] flex-1 items-center gap-3 border-r border-border px-4 py-3 first:border-l sm:min-w-0 sm:px-6"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-full border border-accent/25 bg-background text-accent">
+                <item.icon className="h-4 w-4" />
+              </span>
+              <div className="flex items-baseline gap-2 whitespace-nowrap">
+                <strong className="font-serif text-2xl text-foreground">{item.value}</strong>
+                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  {item.label}
+                </span>
               </div>
             </div>
           ))}
