@@ -231,6 +231,10 @@ export async function getCategories(): Promise<StrapiResponse<Category>> {
       seo: { populate: { metaImage: { fields: ["url"] } } },
     },
     sort: ["sortOrder:asc"],
+    filters: {
+      name: { $notContainsi: "test" },
+      slug: { $notContainsi: "test" },
+    },
     pagination: { pageSize: 100 },
   });
 
