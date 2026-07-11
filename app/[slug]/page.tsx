@@ -26,6 +26,7 @@ import { CommentSection } from "@/components/comments/comment-section";
 import { LikeButton } from "@/components/likes/like-button";
 import { getLikeCount } from "@/app/actions/likes";
 import { getComments } from "@/app/actions/comments";
+import { getRssNewsBySlug } from "@/lib/rss-news";
 
 // ISR: revalidate at most once per hour. All visitors within that window
 // receive the same static HTML — zero extra edge requests per visitor.
@@ -47,6 +48,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
+    const rssArticle = getRssNewsBySlug(slug);
+    if (rssArticle) return { title: rssArticle.title, description: rssArticle.excerpt };
     // React.cache deduplicates this with the call below — single Strapi fetch.
     const res = await getArticleBySlug(slug);
     if (!res.data.length) return {};
@@ -56,6 +59,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
     const { slug } = await params;
+    const rssArticle = getRssNewsBySlug(slug);
+    if (rssArticle) {
+        return (
+            <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+                <Breadcrumbs items={[{ label: rssArticle.categoryName, href: `/category/${rssArticle.categorySlug}` }, { label: rssArticle.title }]} className="mb-8" />
+                <ArticleHeader article={rssArticle} authorAvatarUrl={null} />
+                <Separator className="my-12" />
+                <ArticleContent content={rssArticle.content} />
+                <Separator className="my-12" />
+                <AuthorBio name={rssArticle.authorName} slug="rss" bio={rssArticle.authorBio} avatarUrl={null} />
+            </article>
+        );
+    }
     // Deduplicated by React.cache — no extra Strapi round-trip vs generateMetadata.
     const res = await getArticleBySlug(slug);
 
