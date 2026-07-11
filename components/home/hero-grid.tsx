@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowRight, CalendarDays, Clock, Radio, TrendingUp } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Play, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
     const [api, setApi] = React.useState<CarouselApi>();
     const [current, setCurrent] = React.useState(0);
     const carouselArticles = sideArticles.length > 0 ? sideArticles : [mainArticle];
+    const smallArticles = sideArticles.slice(1, 4);
 
     const plugin = React.useRef(
         Autoplay({ delay: 4500, stopOnInteraction: false })
@@ -50,173 +51,195 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
     }, [api]);
 
     return (
-        <section className="border-b border-border bg-background">
-            <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.75fr)] lg:px-8 lg:py-10">
-                <article className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(280px,0.62fr)]">
-                    <Link
-                        href={`/${mainArticle.slug}`}
-                        prefetch={false}
-                        className="group relative min-h-[360px] overflow-hidden rounded-lg bg-muted sm:min-h-[460px] lg:min-h-[560px]"
-                    >
-                        {mainArticle.coverUrl ? (
-                            <Image
-                                src={mainArticle.coverUrl}
-                                alt={mainArticle.coverAlt || mainArticle.title}
-                                fill
-                                priority
-                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                sizes="(max-width: 1024px) 100vw, 58vw"
-                            />
-                        ) : (
-                            <div className="h-full w-full bg-secondary" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/45 to-transparent" />
-                        <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground sm:p-8">
-                            <div className="mb-4 flex flex-wrap items-center gap-2">
-                                <Badge className="rounded-md bg-accent text-accent-foreground hover:bg-accent">
-                                    Lead Analysis
-                                </Badge>
-                                <Badge variant="secondary" className="rounded-md bg-primary-foreground/90 text-primary">
-                                    {mainArticle.categoryName}
-                                </Badge>
-                            </div>
-                            <h1 className="max-w-3xl text-balance font-serif text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                                {mainArticle.title}
-                            </h1>
-                            <p className="mt-4 line-clamp-3 max-w-2xl text-base leading-7 text-primary-foreground/82 sm:text-lg">
-                                {mainArticle.excerpt}
-                            </p>
-                        </div>
-                    </Link>
+        <section className="bg-background">
+            <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+                <div className="border-y-2 border-foreground py-5 text-center">
+                    <p className="text-base text-foreground sm:text-lg">
+                        These top stories are <strong>free to read.</strong>
+                    </p>
+                    <span className="mx-auto mt-3 block h-0.5 w-24 bg-accent" />
+                </div>
 
-                    <div className="flex flex-col justify-between gap-6 border-y border-border py-6 lg:border-y-0 lg:border-l lg:py-0 lg:pl-6">
-                        <div>
-                            <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">
-                                <Radio className="h-4 w-4" />
-                                Front Page
+                <div className="grid gap-5 border-b border-border py-6 lg:grid-cols-[minmax(0,1fr)_430px]">
+                    <article className="grid gap-5 border border-border bg-card p-5 lg:grid-cols-[0.78fr_1.22fr]">
+                        <div className="flex flex-col justify-between gap-5">
+                            <div>
+                                <div className="mb-3 flex flex-wrap items-center gap-2">
+                                    <Badge className="rounded-md bg-accent text-accent-foreground hover:bg-accent">
+                                        Lead Analysis
+                                    </Badge>
+                                    <Badge variant="outline" className="rounded-md border-border">
+                                        {mainArticle.categoryName}
+                                    </Badge>
+                                </div>
+                                <Link href={`/${mainArticle.slug}`} prefetch={false} className="group">
+                                    <h1 className="text-balance font-serif text-3xl font-black leading-tight tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-4xl xl:text-5xl">
+                                        {mainArticle.title}
+                                    </h1>
+                                </Link>
+                                <p className="mt-4 line-clamp-4 text-base leading-7 text-muted-foreground sm:text-lg">
+                                    {mainArticle.excerpt}
+                                </p>
                             </div>
-                            <h2 className="font-serif text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
-                                Policy, economy and power in Nepal and South Asia.
-                            </h2>
-                            <p className="mt-4 text-sm leading-6 text-muted-foreground sm:text-base">
-                                KUTNITI connects reported facts, institutional context and regional signals so readers can see what matters next.
-                            </p>
+
+                            <div className="space-y-4 border-t border-border pt-4">
+                                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                                    <span className="inline-flex items-center gap-2">
+                                        <CalendarDays className="h-4 w-4 text-accent" />
+                                        {formatDate(mainArticle.publishedAt)}
+                                    </span>
+                                    {mainArticle.readingTime && (
+                                        <span className="inline-flex items-center gap-2">
+                                            <Clock className="h-4 w-4 text-accent" />
+                                            {mainArticle.readingTime} min read
+                                        </span>
+                                    )}
+                                </div>
+                                <Link
+                                    href={`/authors/${mainArticle.authorSlug}`}
+                                    prefetch={false}
+                                    className="block text-sm font-semibold text-foreground transition-colors hover:text-accent"
+                                >
+                                    By {mainArticle.authorName}
+                                </Link>
+                                <Button asChild className="rounded-md bg-primary hover:bg-accent">
+                                    <Link href={`/${mainArticle.slug}`} prefetch={false}>
+                                        Read full story
+                                        <ArrowRight className="h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
 
-                        <div className="grid gap-3 border-y border-border py-4">
-                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                <CalendarDays className="h-4 w-4 text-accent" />
-                                Published {formatDate(mainArticle.publishedAt)}
-                            </div>
-                            {mainArticle.readingTime && (
-                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                    <Clock className="h-4 w-4 text-accent" />
-                                    {mainArticle.readingTime} minute read
+                        <Link
+                            href={`/${mainArticle.slug}`}
+                            prefetch={false}
+                            className="group relative min-h-[260px] overflow-hidden bg-muted sm:min-h-[380px] lg:min-h-[430px]"
+                        >
+                            {mainArticle.coverUrl ? (
+                                <Image
+                                    src={mainArticle.coverUrl}
+                                    alt={mainArticle.coverAlt || mainArticle.title}
+                                    fill
+                                    priority
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    sizes="(max-width: 1024px) 100vw, 48vw"
+                                />
+                            ) : (
+                                <div className="grid h-full place-items-center bg-secondary">
+                                    <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                                        KUTNITI
+                                    </span>
                                 </div>
                             )}
-                            <Link
-                                href={`/authors/${mainArticle.authorSlug}`}
-                                prefetch={false}
-                                className="text-sm font-semibold text-foreground transition-colors hover:text-accent"
-                            >
-                                By {mainArticle.authorName}
-                            </Link>
+                        </Link>
+                    </article>
+
+                    <aside className="grid gap-5 border-l-0 border-border lg:border-l lg:pl-5">
+                        <div className="flex items-center justify-between border-b border-border pb-3">
+                            <h2 className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-foreground">
+                                <TrendingUp className="h-4 w-4 text-accent" />
+                                Trending
+                            </h2>
+                            {carouselArticles.length > 1 && (
+                                <div className="flex gap-1.5">
+                                    {carouselArticles.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            className={cn(
+                                                "h-1.5 rounded-full transition-all duration-300",
+                                                index === current ? "w-5 bg-accent" : "w-1.5 bg-muted-foreground/30"
+                                            )}
+                                            onClick={() => api?.scrollTo(index)}
+                                            aria-label={`Go to slide ${index + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
-                        <Button asChild className="w-fit rounded-md bg-primary hover:bg-accent">
-                            <Link href={`/${mainArticle.slug}`} prefetch={false}>
-                                Read the lead story
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </div>
-                </article>
-
-                <aside className="grid gap-5">
-                    <div className="flex items-center justify-between border-b border-border pb-3">
-                        <h2 className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-foreground">
-                            <TrendingUp className="h-4 w-4 text-accent" />
-                            Trending Now
-                        </h2>
-                        {carouselArticles.length > 1 && (
-                            <div className="flex gap-1.5">
-                                {carouselArticles.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        className={cn(
-                                            "h-1.5 rounded-full transition-all duration-300",
-                                            index === current ? "w-5 bg-accent" : "w-1.5 bg-muted-foreground/30"
-                                        )}
-                                        onClick={() => api?.scrollTo(index)}
-                                        aria-label={`Go to slide ${index + 1}`}
-                                    />
+                        <Carousel
+                            setApi={setApi}
+                            plugins={[plugin.current]}
+                            className="w-full"
+                            opts={{ align: "start", loop: carouselArticles.length > 1 }}
+                        >
+                            <CarouselContent>
+                                {carouselArticles.map((article) => (
+                                    <CarouselItem key={article.id}>
+                                        <Link
+                                            href={`/${article.slug}`}
+                                            prefetch={false}
+                                            className="group grid overflow-hidden bg-card"
+                                        >
+                                            <div className="relative aspect-video overflow-hidden bg-muted">
+                                                {article.coverUrl ? (
+                                                    <Image
+                                                        src={article.coverUrl}
+                                                        alt={article.coverAlt || article.title}
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                        sizes="(max-width: 1024px) 100vw, 420px"
+                                                    />
+                                                ) : (
+                                                    <div className="h-full w-full bg-secondary" />
+                                                )}
+                                                <span className="absolute inset-0 grid place-items-center bg-black/10">
+                                                    <span className="grid size-14 place-items-center rounded-full bg-black/60 text-white">
+                                                        <Play className="ml-1 h-6 w-6 fill-white" />
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div className="border-x border-b border-border p-4">
+                                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+                                                    {article.categoryName}
+                                                </p>
+                                                <h3 className="mt-2 line-clamp-3 font-serif text-2xl font-bold leading-tight tracking-tight transition-colors group-hover:text-accent">
+                                                    {article.title}
+                                                </h3>
+                                            </div>
+                                        </Link>
+                                    </CarouselItem>
                                 ))}
-                            </div>
-                        )}
-                    </div>
+                            </CarouselContent>
+                        </Carousel>
 
-                    <Carousel
-                        setApi={setApi}
-                        plugins={[plugin.current]}
-                        className="w-full"
-                        opts={{ align: "start", loop: carouselArticles.length > 1 }}
-                    >
-                        <CarouselContent>
-                            {carouselArticles.map((article) => (
-                                <CarouselItem key={article.id}>
+                        {smallArticles.length > 0 && (
+                            <div className="divide-y divide-border border-y border-border">
+                                {smallArticles.map((article) => (
                                     <Link
+                                        key={article.id}
                                         href={`/${article.slug}`}
                                         prefetch={false}
-                                        className="group grid overflow-hidden rounded-lg border border-border bg-card"
+                                        className="group grid gap-3 py-4 sm:grid-cols-[96px_minmax(0,1fr)]"
                                     >
-                                        <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                                        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                                             {article.coverUrl ? (
                                                 <Image
                                                     src={article.coverUrl}
                                                     alt={article.coverAlt || article.title}
                                                     fill
                                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                                    sizes="(max-width: 1024px) 100vw, 28vw"
+                                                    sizes="96px"
                                                 />
                                             ) : (
                                                 <div className="h-full w-full bg-secondary" />
                                             )}
-                                            <Badge className="absolute left-4 top-4 rounded-md bg-primary text-primary-foreground">
-                                                {article.categoryName}
-                                            </Badge>
                                         </div>
-                                        <div className="p-5">
-                                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                                                {formatDate(article.publishedAt)}
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                                                {article.categoryName}
                                             </p>
-                                            <h3 className="mt-2 line-clamp-3 font-serif text-2xl font-bold leading-tight tracking-tight transition-colors group-hover:text-accent">
+                                            <h3 className="mt-1 line-clamp-2 font-serif text-lg font-bold leading-tight transition-colors group-hover:text-accent">
                                                 {article.title}
                                             </h3>
-                                            <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
-                                                {article.excerpt}
-                                            </p>
                                         </div>
                                     </Link>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                    </Carousel>
-
-                    <div className="grid grid-cols-3 border border-border bg-secondary/45 text-center">
-                        {[
-                            ["Newsroom", "Live"],
-                            ["Briefing", "Daily"],
-                            ["Analysis", "Deep"],
-                        ].map(([label, value]) => (
-                            <div key={label} className="border-r border-border p-3 last:border-r-0">
-                                <div className="text-lg font-bold text-foreground">{value}</div>
-                                <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                                    {label}
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </aside>
+                        )}
+                    </aside>
+                </div>
             </div>
         </section>
     );
