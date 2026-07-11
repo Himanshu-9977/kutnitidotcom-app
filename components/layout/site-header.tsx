@@ -67,7 +67,7 @@ export async function SiteHeader() {
     return (
         <header className="relative z-50 w-full border-b border-border bg-background">
             <div className="border-b border-border bg-secondary/30">
-                <div className="mx-auto flex h-28 max-w-[1500px] items-center justify-center px-4 sm:h-40 lg:h-64">
+                <div className="mx-auto flex h-28 max-w-[1800px] items-center justify-center px-4 sm:h-40 lg:h-64">
                     <div className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/65">
                         Advertisement
                     </div>
@@ -75,7 +75,7 @@ export async function SiteHeader() {
             </div>
 
             <div className="border-b border-border bg-background">
-                <div className="mx-auto grid max-w-[1500px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:items-end lg:px-8">
+                <div className="mx-auto grid max-w-[1800px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:items-end lg:px-8">
                     <div className="flex items-start justify-between gap-3 lg:block">
                         <div className="flex items-center gap-2">
                             <MobileNav categories={sections} />
@@ -145,7 +145,7 @@ export async function SiteHeader() {
                     </div>
                 </div>
 
-                <div className="mx-auto flex max-w-[1500px] items-center justify-center gap-4 border-t border-border px-4 py-2 lg:hidden">
+                <div className="mx-auto flex max-w-[1800px] items-center justify-center gap-4 border-t border-border px-4 py-2 lg:hidden">
                     <LanguageSwitcher />
                     <AuthMenu />
                 </div>
@@ -153,7 +153,7 @@ export async function SiteHeader() {
 
             <div className="border-b-2 border-foreground bg-background">
                 <nav
-                    className="mx-auto flex h-12 max-w-[1500px] items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:justify-center lg:px-8"
+                    className="mx-auto flex h-12 max-w-[1800px] items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:justify-center lg:px-8"
                     aria-label="Primary sections"
                 >
                     <Link
