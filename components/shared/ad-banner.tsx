@@ -20,7 +20,7 @@ export function AdBanner({ className, type = "horizontal", label = "Advertisemen
       </span>
       <div
         className={cn(
-          "flex items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 text-muted-foreground/40 transition-colors hover:bg-muted/50",
+          "flex items-center justify-center rounded-md border border-dashed border-border bg-secondary/60 text-muted-foreground/55 transition-colors hover:bg-secondary",
           dimensions[type]
         )}
       >

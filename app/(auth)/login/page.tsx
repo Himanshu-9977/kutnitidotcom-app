@@ -168,7 +168,7 @@ function LoginContent() {
 
       <CardFooter className="flex flex-col space-y-2">
         <div className="text-sm text-muted-foreground text-center">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link prefetch={false} href="/register" className="text-purple-600 hover:text-purple-700 font-semibold">
             Sign up
           </Link>

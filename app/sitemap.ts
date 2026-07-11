@@ -14,13 +14,18 @@ import {
 } from "@/lib/strapi";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articleSlugs, categorySlugs, authorSlugs, tagSlugs] =
-    await Promise.all([
+  const [articleResult, categoryResult, authorResult, tagResult] =
+    await Promise.allSettled([
       getAllArticleSlugs(),
       getAllCategorySlugs(),
       getAllAuthorSlugs(),
       getAllTagSlugs(),
     ]);
+
+  const articleSlugs = articleResult.status === "fulfilled" ? articleResult.value : [];
+  const categorySlugs = categoryResult.status === "fulfilled" ? categoryResult.value : [];
+  const authorSlugs = authorResult.status === "fulfilled" ? authorResult.value : [];
+  const tagSlugs = tagResult.status === "fulfilled" ? tagResult.value : [];
 
   const now = new Date().toISOString();
 

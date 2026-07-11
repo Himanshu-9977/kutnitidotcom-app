@@ -1,10 +1,17 @@
 "use server"
 
 import { auth } from "@/auth"
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337"
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN
+
+type StrapiCommentItem = {
+  id: string | number
+  documentId?: string
+  attributes?: Record<string, unknown>
+  [key: string]: unknown
+}
 
 export async function getComments(articleId: string) {
   if (!articleId) {
@@ -27,7 +34,7 @@ export async function getComments(articleId: string) {
     }
 
     const data = await response.json()
-    const comments = data.data?.map((item: any) => {
+    const comments = data.data?.map((item: StrapiCommentItem) => {
       // Handle both flat and nested structure
       if (item.attributes) {
         return {

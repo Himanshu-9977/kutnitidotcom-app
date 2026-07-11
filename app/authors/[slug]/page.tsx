@@ -27,8 +27,13 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-    const slugs = await getAllAuthorSlugs();
-    return slugs.map((slug) => ({ slug }));
+    try {
+        const slugs = await getAllAuthorSlugs();
+        return slugs.map((slug) => ({ slug }));
+    } catch (error) {
+        console.error("Failed to generate author static params", error);
+        return [];
+    }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

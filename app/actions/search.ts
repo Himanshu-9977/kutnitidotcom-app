@@ -38,18 +38,18 @@ export async function getGlobalSearchIndex(): Promise<GlobalSearchIndex> {
         return {
             // We manually map to ensure typescript gets the minimal subset we want, 
             // even if Strapi returned slightly more
-            articles: articlesRes.data.map((a: any) => ({
+            articles: articlesRes.data.map((a) => ({
                 documentId: a.documentId,
                 title: a.title,
                 slug: a.slug,
                 category: a.category ? { name: a.category.name } : undefined,
             })),
-            categories: categoriesRes.data.map((c: any) => ({
+            categories: categoriesRes.data.map((c) => ({
                 documentId: c.documentId,
                 name: c.name,
                 slug: c.slug,
             })),
-            authors: authorsRes.data.map((a: any) => ({
+            authors: authorsRes.data.map((a) => ({
                 documentId: a.documentId,
                 name: a.name,
                 slug: a.slug,

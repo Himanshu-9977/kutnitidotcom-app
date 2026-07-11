@@ -5,7 +5,7 @@
 
 export const SITE_NAME = "KUTNITI";
 export const SITE_DESCRIPTION =
-  "Your trusted source for news, analysis, and in-depth reporting.";
+  "Source-backed reporting and analysis on Nepal's policy, economy, technology and regional affairs.";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://localhost:3000";
 
 // Strapi CMS

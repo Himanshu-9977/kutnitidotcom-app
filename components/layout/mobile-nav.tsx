@@ -7,7 +7,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { SITE_NAME } from "@/lib/constants";
@@ -22,7 +22,7 @@ export function MobileNav({ categories = [] }: MobileNavProps) {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="lg:hidden">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle menu</span>
                 </Button>

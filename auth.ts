@@ -6,6 +6,8 @@ import clientPromise from "./lib/mongodb"
 import { compare } from "bcryptjs"
 import { z } from "zod"
 
+const adapter = process.env.MONGODB_URI ? MongoDBAdapter(clientPromise) : undefined
+
 // Login validation schema
 const loginSchema = z.object({
   email: z.string().email(),
@@ -13,7 +15,7 @@ const loginSchema = z.object({
 })
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  adapter,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days

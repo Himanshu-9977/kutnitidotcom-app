@@ -8,10 +8,21 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import { createComment } from "@/app/actions/comments"
 
+type OptimisticComment = {
+  id: string
+  documentId: string
+  content: string
+  userName: string
+  userEmail: string
+  userId: string
+  createdAt: string
+  updatedAt: string
+}
+
 interface CommentFormProps {
   articleId: string
   onCommentAdded: () => void
-  onCommentOptimistic?: (comment: any) => void
+  onCommentOptimistic?: (comment: OptimisticComment) => void
   user?: {
     name: string
     email: string

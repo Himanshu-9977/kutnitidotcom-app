@@ -6,52 +6,71 @@
 import Link from "next/link";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getCategories } from "@/lib/strapi";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Twitter, Facebook, Linkedin, Instagram } from "lucide-react";
+import { NewsletterForm } from "@/components/shared/newsletter-form";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Twitter } from "lucide-react";
 
 export async function SiteFooter() {
     const currentYear = new Date().getFullYear();
-    const categoriesRes = await getCategories();
-    const categories = categoriesRes.data.slice(0, 5); // Show top 5 categories
+    let categories: Array<{ name: string; slug: string }> = [];
+
+    try {
+        const categoriesRes = await getCategories();
+        categories = categoriesRes.data.slice(0, 6).map((category) => ({
+            name: category.name,
+            slug: category.slug,
+        }));
+    } catch (error) {
+        console.error("Failed to load footer categories", error);
+    }
 
     return (
-        <footer className="border-t border-border bg-muted/30 pt-16 pb-8">
+        <footer className="border-t border-border bg-primary text-primary-foreground">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="grid gap-12 lg:grid-cols-4">
-                    {/* Brand & Description */}
-                    <div className="lg:col-span-1">
-                        <Link prefetch={false} href="/" className="mb-4 inline-block text-2xl font-bold font-serif tracking-tight">
-                            {SITE_NAME}
+                <div className="grid gap-10 py-12 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr] lg:gap-12">
+                    <div>
+                        <Link prefetch={false} href="/" className="mb-4 inline-flex items-center gap-3">
+                            <span className="grid size-10 place-items-center rounded-md bg-primary-foreground font-serif text-lg font-bold text-primary">
+                                K
+                            </span>
+                            <span className="grid leading-none">
+                                <span className="font-serif text-3xl font-bold tracking-tight">
+                                    {SITE_NAME}
+                                </span>
+                                <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-primary-foreground/65">
+                                    Strategic Intelligence
+                                </span>
+                            </span>
                         </Link>
-                        <p className="mb-6 text-muted-foreground">
+                        <p className="max-w-sm text-sm leading-6 text-primary-foreground/70">
                             {SITE_DESCRIPTION}
                         </p>
-                        <div className="flex gap-4">
+                        <div className="mt-6 flex gap-3">
                             <Link prefetch={false} href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
-                                <Twitter className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+                                <Twitter className="h-5 w-5 text-primary-foreground/65 transition-colors hover:text-primary-foreground" />
                             </Link>
                             <Link prefetch={false} href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
-                                <Facebook className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+                                <Facebook className="h-5 w-5 text-primary-foreground/65 transition-colors hover:text-primary-foreground" />
                             </Link>
                             <Link prefetch={false} href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-                                <Linkedin className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+                                <Linkedin className="h-5 w-5 text-primary-foreground/65 transition-colors hover:text-primary-foreground" />
                             </Link>
                             <Link prefetch={false} href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
-                                <Instagram className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+                                <Instagram className="h-5 w-5 text-primary-foreground/65 transition-colors hover:text-primary-foreground" />
                             </Link>
                         </div>
                     </div>
 
-                    {/* Categories */}
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Categories</h3>
+                        <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
+                            Desks
+                        </h3>
                         <ul className="space-y-3">
                             {categories.map((category) => (
                                 <li key={category.slug}>
-                                    <Link prefetch={false}
+                                    <Link
+                                        prefetch={false}
                                         href={`/category/${category.slug}`}
-                                        className="text-muted-foreground transition-colors hover:text-primary"
+                                        className="text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground"
                                     >
                                         {category.name}
                                     </Link>
@@ -60,57 +79,59 @@ export async function SiteFooter() {
                         </ul>
                     </div>
 
-                    {/* Quick Links */}
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Company</h3>
+                        <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
+                            Trust
+                        </h3>
                         <ul className="space-y-3">
                             <li>
-                                <Link prefetch={false} href="/about" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/about" className="text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground">
                                     About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link prefetch={false} href="/contact" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/contact" className="text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground">
                                     Contact
                                 </Link>
                             </li>
                             <li>
-                                <Link prefetch={false} href="/privacy" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/privacy" className="text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground">
                                     Privacy Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link prefetch={false} href="/terms" className="text-muted-foreground transition-colors hover:text-primary">
+                                <Link prefetch={false} href="/terms" className="text-sm text-primary-foreground/75 transition-colors hover:text-primary-foreground">
                                     Terms of Service
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Newsletter (Simplified) */}
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Subscribe</h3>
-                        <p className="mb-4 text-sm text-muted-foreground">
-                            Get the latest updates and articles delivered to your inbox.
+                        <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
+                            Daily Brief
+                        </h3>
+                        <p className="mb-4 text-sm leading-6 text-primary-foreground/70">
+                            Get KUTNITI&apos;s policy, economy and geopolitics updates in a concise morning brief.
                         </p>
-                        <form className="flex flex-col gap-2">
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="bg-background"
-                            />
-                            <Button type="submit">Subscribe</Button>
-                        </form>
+                        <NewsletterForm className="[&_input]:border-primary-foreground/20 [&_input]:bg-primary-foreground/10 [&_input]:text-primary-foreground [&_input::placeholder]:text-primary-foreground/45 [&_button]:bg-primary-foreground [&_button]:text-primary [&_button:hover]:bg-primary-foreground/90 [&_p]:text-primary-foreground/55" />
                     </div>
                 </div>
 
-                <div className="mt-16 border-t border-border pt-8 text-center sm:flex sm:justify-between sm:text-left">
-                    <p className="text-sm text-muted-foreground">
+                <div className="border-t border-primary-foreground/15 py-6 text-sm text-primary-foreground/60 sm:flex sm:items-center sm:justify-between">
+                    <p>
                         &copy; {currentYear} {SITE_NAME}. All rights reserved.
                     </p>
-                    <p className="mt-2 text-sm text-muted-foreground sm:mt-0">
-                        Designed & Developed with ❤️
-                    </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-4 sm:mt-0">
+                        <span className="inline-flex items-center gap-2">
+                            <MapPin className="h-4 w-4" />
+                            Kathmandu, Nepal
+                        </span>
+                        <span className="inline-flex items-center gap-2">
+                            <Mail className="h-4 w-4" />
+                            newsroom@kutniti.com
+                        </span>
+                    </div>
                 </div>
             </div>
         </footer>
