@@ -25,7 +25,7 @@ export async function SiteFooter() {
 
     return (
         <footer className="border-t border-border bg-primary text-primary-foreground">
-            <div className="mx-auto max-w-[1800px] px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
                 <div className="grid gap-10 py-12 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr] lg:gap-12">
                     <div>
                         <Link prefetch={false} href="/" className="mb-4 inline-flex items-center gap-3">

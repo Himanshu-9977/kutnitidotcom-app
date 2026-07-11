@@ -52,7 +52,7 @@ export function HeroGrid({ mainArticle, sideArticles }: HeroGridProps) {
 
     return (
         <section className="bg-background">
-            <div className="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
                 <div className="border-y-2 border-foreground py-5 text-center">
                     <p className="text-base text-foreground sm:text-lg">
                         These top stories are <strong>free to read.</strong>

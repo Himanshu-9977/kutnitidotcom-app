@@ -121,7 +121,7 @@ export default async function HomePage() {
       <HeroGrid mainArticle={heroArticle} sideArticles={sideArticles} />
 
       <section className="border-b border-border bg-card">
-        <div className="mx-auto grid max-w-[1800px] grid-cols-2 gap-0 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-0 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
           {[
             { label: "Coverage desks", value: categories.length || "Live", icon: Newspaper },
             { label: "Latest stories", value: latest.length || allArticles.length, icon: BarChart3 },
@@ -145,7 +145,7 @@ export default async function HomePage() {
 
       <BriefingDesk articles={allArticles.slice(0, 12)} categories={categoryNames} />
 
-      <section id="latest" className="mx-auto max-w-[1800px] px-4 py-12 sm:px-6 lg:px-8">
+      <section id="latest" className="mx-auto max-w-[1500px] px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
           <ArticleList
             contained={false}
@@ -196,7 +196,7 @@ export default async function HomePage() {
 
       {featuredCards.length > 0 && (
         <section className="border-y border-border bg-secondary/45 py-12">
-          <div className="mx-auto max-w-[1800px] px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
             <div className="mb-7 flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-end">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Analysis Shelf</p>
@@ -223,7 +223,7 @@ export default async function HomePage() {
 
       {categories.length > 0 && (
         <section className="py-12">
-          <div className="mx-auto max-w-[1800px] px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
             <div className="mb-7 border-b border-border pb-5">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Topic Hubs</p>
               <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -262,7 +262,7 @@ export default async function HomePage() {
       )}
 
       <section className="border-t border-border bg-card py-12">
-        <div className="mx-auto grid max-w-[1800px] gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
+        <div className="mx-auto grid max-w-[1500px] gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Daily Brief</p>
             <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
