@@ -36,6 +36,7 @@ const fallbackSections = [
     { name: "Economy", slug: "economy" },
     { name: "Business", slug: "business" },
     { name: "Technology", slug: "technology" },
+    { name: "Sports", slug: "sports" },
     { name: "Opinion", slug: "opinion" },
     { name: "Video", slug: "video" },
 ];

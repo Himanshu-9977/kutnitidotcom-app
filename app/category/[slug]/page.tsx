@@ -40,9 +40,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
-    if (slug === "nepal" || slug === "international") {
-        const name = slug === "nepal" ? "Nepal" : "International";
-        return { title: name, description: `${name} news from Rastriya Samachar Samiti (RSS).` };
+    const localArticles = getRssNewsByCategory(slug);
+    if (localArticles.length > 0) {
+        const name = localArticles[0].categoryName;
+        return { title: name, description: `Latest ${name} reporting and concise analysis from KUTNITI.` };
     }
     const res = await getCategoryBySlug(slug);
     if (!res.data.length) return {};
@@ -60,13 +61,13 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     const rssArticles = getRssNewsByCategory(slug);
 
     if (rssArticles.length > 0) {
-        const name = slug === "nepal" ? "Nepal" : "International";
+        const name = rssArticles[0].categoryName;
         return (
             <main>
                 <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
                     <Breadcrumbs items={[{ label: name }]} className="mb-8" />
                 </div>
-                <CategoryHeader name={name} description={`${name} reporting credited to Rastriya Samachar Samiti (RSS).`} coverUrl="" articleCount={rssArticles.length} type="category" />
+                <CategoryHeader name={name} description={`Latest ${name} reporting and concise analysis from KUTNITI.`} coverUrl="" articleCount={rssArticles.length} type="category" />
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     <ArticleList articles={rssArticles} title={`Latest ${name} News`} />
                 </div>

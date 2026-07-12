@@ -85,9 +85,83 @@ const stories: ArticleFull[] = [
     publishedAt: "2026-06-19T06:00:00.000Z",
     seo: null,
   },
+  {
+    id: -301,
+    documentId: "daily-governance-delivery-unit",
+    title: "PM's Office moves to create a delivery unit",
+    slug: "pm-office-moves-to-create-delivery-unit",
+    excerpt: "The proposed unit would monitor national commitments and coordinate implementation across ministries.",
+    content: "The Prime Minister's Office is preparing a delivery unit to track the government's 18-point national commitments and coordinate work across ministries.\n\n## Why it matters\n\nNepal's policy problem is often implementation rather than announcement. A central tracking unit could make delays and institutional bottlenecks easier to identify.\n\n## Driving the news\n\n- The unit is expected to monitor delivery across ministries and agencies.\n- The model draws on policy-delivery systems used in countries including the UK, Malaysia and Rwanda.\n\n## What to watch\n\nIts impact will depend on measurable targets, public reporting and whether ministries respond to the unit's findings.\n\n**Source:** [Onlinekhabar reporting, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973774/balen-forming-pm-delivery-unit).",
+    coverUrl: "", coverAlt: "", readingTime: 2, featured: true,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Politics", categorySlug: "politics", tags: [{ name: "Governance", slug: "governance" }],
+    publishedAt: "2026-07-12T05:05:00.000Z", seo: null,
+  },
+  {
+    id: -302,
+    documentId: "daily-passport-accountability",
+    title: "Parliamentary panel to examine e-passport printing dispute",
+    slug: "parliamentary-panel-to-examine-e-passport-printing-dispute",
+    excerpt: "The Public Accounts Committee has called officials from the foreign ministry and passport department for answers.",
+    content: "Parliament's Public Accounts Committee plans to discuss questions surrounding Nepal's electronic-passport printing process.\n\n## Why it matters\n\nPassport procurement touches public money, national security and the reliability of a critical citizen service.\n\n## Driving the news\n\n- The committee has invited officials from the Ministry of Foreign Affairs and Department of Passports.\n- Lawmakers have raised questions around a dispute valued at roughly Rs 10.13 billion.\n\n## What to watch\n\nThe meeting is expected to clarify the procurement record; an invitation to explain is not itself a finding of wrongdoing.\n\n**Source:** [Onlinekhabar reporting, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973807/parliaments-public-accounts-committee-to-discuss-e-passport-printing-issue).",
+    coverUrl: "", coverAlt: "", readingTime: 2, featured: false,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Politics", categorySlug: "politics", tags: [{ name: "Accountability", slug: "accountability" }],
+    publishedAt: "2026-07-12T06:08:00.000Z", seo: null,
+  },
+  {
+    id: -303,
+    documentId: "daily-nepse-six-month-low",
+    title: "NEPSE falls to its lowest level in six months",
+    slug: "nepse-falls-to-lowest-level-in-six-months",
+    excerpt: "Recent policy announcements have yet to revive investor confidence in Nepal's share market.",
+    content: "Nepal's benchmark share index has slipped to its lowest point in six months despite policy measures intended to support market confidence.\n\n## Why it matters\n\nA weak market can signal caution about liquidity, earnings and the credibility of policy support—not simply short-term trading sentiment.\n\n## The big picture\n\nThe budget made capital-gains tax the final tax for investors, but the market response has remained subdued.\n\n## What to watch\n\nTurnover, banking liquidity and the implementation of announced reforms will matter more than fresh promises.\n\n**Source:** [Onlinekhabar reporting, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973792/even-policy-announcements-failed-to-restore-stock-market-enthusiasm-nepse-at-6-month-low).",
+    coverUrl: "", coverAlt: "", readingTime: 2, featured: false,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Economy", categorySlug: "economy", tags: [{ name: "NEPSE", slug: "nepse" }],
+    publishedAt: "2026-07-12T06:15:00.000Z", seo: null,
+  },
+  {
+    id: -304,
+    documentId: "daily-manpower-enforcement",
+    title: "159 manpower companies face action over Indian airport departures",
+    slug: "159-manpower-companies-face-action-over-indian-airport-departures",
+    excerpt: "Labour authorities say the agencies sent workers through Indian airports without required approval.",
+    content: "The Department of Foreign Employment has acted against 159 manpower companies accused of sending Nepali workers through Indian airports without prior approval.\n\n## Why it matters\n\nUnrecorded travel routes can weaken worker protection, complicate rescue efforts and make recruitment practices harder to audit.\n\n## By the numbers\n\n- 159 companies were warned over airport use.\n- Hundreds of other agencies were told to submit missing travel details.\n- Eight repeat offenders received Rs 50,000 fines, according to the department.\n\n## What to watch\n\nAuthorities have warned that repeated violations could lead to stronger enforcement.\n\n**Source:** [Onlinekhabar reporting, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973814/159-manpower-companies-taking-workers-out-of-indian-airports-under-action).",
+    coverUrl: "", coverAlt: "", readingTime: 2, featured: false,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Business", categorySlug: "business", tags: [{ name: "Labour", slug: "labour" }],
+    publishedAt: "2026-07-12T06:02:00.000Z", seo: null,
+  },
+  {
+    id: -305,
+    documentId: "daily-farmer-pension",
+    title: "Government commits to a contribution-based farmer pension",
+    slug: "government-commits-to-contribution-based-farmer-pension",
+    excerpt: "The national commitment also links farmer IDs to subsidies, credit, insurance and social protection.",
+    content: "The government has included a contribution-based farmer pension in its national commitments, alongside farmer identification and targeted support.\n\n## Why it matters\n\nAgricultural support often misses genuine small farmers. Linking benefits to a credible identification system could improve targeting—but only if registration is accessible and transparent.\n\n## Driving the news\n\nThe commitment also mentions credit cards, insurance, concessional loans, irrigation expansion and support for a domestic fertiliser plant.\n\n## What to watch\n\nThe next test is whether the pledge receives a funded programme, eligibility rules and an implementation timeline.\n\n**Source:** [Onlinekhabar reporting, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973823/governments-commitment-to-provide-pension-to-farmers).",
+    coverUrl: "", coverAlt: "", readingTime: 2, featured: false,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Nepal", categorySlug: "nepal", tags: [{ name: "Agriculture", slug: "agriculture" }],
+    publishedAt: "2026-07-12T06:16:00.000Z", seo: null,
+  },
+  {
+    id: -306,
+    documentId: "daily-u19-women-cricket",
+    title: "Nepal moves closer to U-19 Women's Premier Cup quarterfinals",
+    slug: "nepal-nears-u19-womens-premier-cup-quarterfinals",
+    excerpt: "A second consecutive victory has strengthened Nepal's position in the tournament.",
+    content: "Nepal's U-19 women's cricket team moved closer to the Premier Cup quarterfinals after recording a second straight win.\n\n## Why it matters\n\nConsistent age-group results deepen Nepal's women's cricket pathway and give emerging players more high-pressure international experience.\n\n## What to watch\n\nThe remaining group result will determine qualification and Nepal's likely quarterfinal matchup.\n\n**Source:** [Onlinekhabar Sports, July 12, 2026](https://www.onlinekhabar.com/2026/07/1973767/u-19-womens-premier-cup-nepal-nears-quarterfinals-with-second-consecutive-win).",
+    coverUrl: "", coverAlt: "", readingTime: 1, featured: false,
+    authorName: "KUTNITI News Desk", authorSlug: "kutniti-news-desk", authorBio: "KUTNITI's source-backed daily news desk.", authorAvatarUrl: null,
+    categoryName: "Sports", categorySlug: "sports", tags: [{ name: "Cricket", slug: "cricket" }],
+    publishedAt: "2026-07-12T05:40:00.000Z", seo: null,
+  },
 ];
 
-export const rssNews: ArticleMeta[] = stories;
-export const getRssNewsByCategory = (slug: string) => stories.filter((story) => story.categorySlug === slug);
+export const rssNews: ArticleMeta[] = [...stories].sort(
+  (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+);
+export const getRssNewsByCategory = (slug: string) => rssNews.filter((story) => story.categorySlug === slug);
 export const getRssNewsBySlug = (slug: string) => stories.find((story) => story.slug === slug);
 
