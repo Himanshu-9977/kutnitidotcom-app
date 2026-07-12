@@ -6,9 +6,8 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Calendar } from "lucide-react";
+import { Clock } from "lucide-react";
 import type { ArticleMeta } from "@/lib/types/strapi";
 
 interface ArticleHeaderProps {
@@ -16,85 +15,58 @@ interface ArticleHeaderProps {
     authorAvatarUrl?: string | null;
 }
 
-export function ArticleHeader({ article, authorAvatarUrl }: ArticleHeaderProps) {
+export function ArticleHeader({ article }: ArticleHeaderProps) {
     return (
-        <header className="space-y-6">
-            {/* Category and Reading Time */}
-            <div className="flex flex-wrap items-center gap-3">
+        <header className="border-b border-border pb-8 sm:pb-10">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Link prefetch={false} href={`/category/${article.categorySlug}`}>
-                    <Badge variant="default" className="hover:bg-primary/90">
+                    <Badge variant="outline" className="rounded-sm border-accent/35 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
                         {article.categoryName}
                     </Badge>
                 </Link>
+                <span aria-hidden="true">•</span>
+                <time dateTime={article.publishedAt}>
+                    {new Date(article.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                    })}
+                </time>
                 {article.readingTime && (
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                        <span aria-hidden="true">•</span>
                         <Clock className="h-4 w-4" />
                         <span>{article.readingTime} min read</span>
                     </div>
                 )}
             </div>
 
-            {/* Title */}
-            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl font-serif">
+            <h1 className="mt-5 text-balance font-serif text-4xl font-black leading-[1.04] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl">
                 {article.title}
             </h1>
 
-            {/* Excerpt */}
-            <p className="text-pretty text-xl leading-relaxed text-muted-foreground">
+            <p className="mt-5 max-w-3xl text-pretty text-lg leading-8 text-muted-foreground sm:text-2xl sm:leading-9">
                 {article.excerpt}
             </p>
 
-            {/* Author and Date */}
-            <div className="flex items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-4 text-sm">
                 <Link prefetch={false}
                     href={`/authors/${article.authorSlug}`}
-                    className="flex items-center gap-3 group"
+                    className="font-bold text-foreground transition-colors hover:text-accent"
                 >
-                    <Avatar className="h-12 w-12">
-                        {authorAvatarUrl && (
-                            <AvatarImage
-                                src={authorAvatarUrl}
-                                alt={article.authorName}
-                            />
-                        )}
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                            {article.authorName.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                            {article.authorName}
-                        </p>
-                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                            <Calendar className="h-3.5 w-3.5" />
-                            <time dateTime={article.publishedAt}>
-                                {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                })}
-                            </time>
-                        </div>
-                    </div>
+                    By {article.authorName}
                 </Link>
-            </div>
-
-            {/* Tags */}
-            {article.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                {article.tags.length > 0 && <div className="flex flex-wrap gap-3">
                     {article.tags.map((tag) => (
-                        <Link prefetch={false} key={tag.slug} href={`/tag/${tag.slug}`}>
-                            <Badge variant="secondary" className="hover:bg-secondary/80">
-                                #{tag.name}
-                            </Badge>
+                        <Link prefetch={false} key={tag.slug} href={`/tag/${tag.slug}`} className="text-muted-foreground hover:text-foreground">
+                            #{tag.name}
                         </Link>
                     ))}
-                </div>
-            )}
+                </div>}
+            </div>
 
-            {/* Cover Image */}
             {article.coverUrl && (
-                <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                <div className="relative mt-8 aspect-video w-full overflow-hidden border border-border bg-muted">
                     <Image
 
                         src={article.coverUrl}
