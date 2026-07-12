@@ -36,19 +36,24 @@ export default function cloudinaryLoader({
     );
   }
 
-  // 2. Relative path (from Strapi local upload) => Prepend Strapi URL
-  if (src.startsWith("/")) {
+  // 2. Strapi local uploads => Prepend the CMS URL.
+  if (src.startsWith("/uploads/")) {
     // Determine base URL (client-side fallback to localhost if env missing)
     const baseUrl = process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
     return `${baseUrl}${src}`;
   }
 
-  // 3. Absolute URL (external) => Return as is
+  // 3. Assets from this app's public directory must stay on the site origin.
+  if (src.startsWith("/")) {
+    return src;
+  }
+
+  // 4. Absolute URL (external) => Return as is
   if (src.startsWith("http")) {
     return src;
   }
 
-  // 4. Cloudinary Public ID => Construct full URL
+  // 5. Cloudinary Public ID => Construct full URL
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/w_${width},q_${quality},f_auto/${src}`;
 }
 
