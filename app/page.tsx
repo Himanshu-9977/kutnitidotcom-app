@@ -83,7 +83,8 @@ async function getHomeData() {
 export default async function HomePage() {
   const { featured, latest, categories } = await getHomeData();
   const allArticles = dedupeArticles([...rssNews, ...featured, ...latest]);
-  const heroArticle = featured[0] ?? latest[0] ?? rssNews[0];
+  const specialFeature = rssNews.find((article) => article.documentId === "world-cup-2026-final-four");
+  const heroArticle = specialFeature ?? featured[0] ?? latest[0] ?? rssNews[0];
 
   if (!heroArticle) {
     return (
