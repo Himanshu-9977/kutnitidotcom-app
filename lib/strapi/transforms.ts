@@ -15,6 +15,7 @@ import type {
   SocialLinkComponent,
 } from "@/lib/types/strapi";
 import type { ArticleMeta, ArticleFull } from "@/lib/types/strapi";
+import { normalizeCategory } from "@/lib/category-groups";
 
 // ---------------------------------------------------------------------------
 // Media helpers
@@ -66,6 +67,11 @@ export function transformSeo(seo: SeoComponent | null | undefined) {
 
 /** Transform a Strapi article entity into a lightweight card-friendly object */
 export function toArticleMeta(entity: StrapiEntity<Article>): ArticleMeta {
+  const category = normalizeCategory(
+    entity.category?.name ?? "Uncategorized",
+    entity.category?.slug ?? ""
+  );
+
   return {
     id: entity.id,
     documentId: entity.documentId,
@@ -78,8 +84,8 @@ export function toArticleMeta(entity: StrapiEntity<Article>): ArticleMeta {
     featured: entity.featured,
     authorName: entity.author?.name ?? "Unknown",
     authorSlug: entity.author?.slug ?? "",
-    categoryName: entity.category?.name ?? "Uncategorized",
-    categorySlug: entity.category?.slug ?? "",
+    categoryName: category.name,
+    categorySlug: category.slug,
     tags: entity.tags?.map((t: StrapiEntity<Tag>) => ({
       name: t.name,
       slug: t.slug,
@@ -115,10 +121,12 @@ export interface CategoryMeta {
 }
 
 export function toCategoryMeta(entity: StrapiEntity<Category>): CategoryMeta {
+  const category = normalizeCategory(entity.name, entity.slug);
+
   return {
     id: entity.id,
-    name: entity.name,
-    slug: entity.slug,
+    name: category.name,
+    slug: category.slug,
     description: entity.description ?? null,
     coverUrl: getMediaUrl(entity.cover),
     coverAlt: getMediaAlt(entity.cover),

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
+import { mergeCategoryList } from "@/lib/category-groups";
 
 const editionLinks = [
     { label: "Nepal", href: "/category/nepal" },
@@ -54,7 +55,7 @@ export async function SiteHeader() {
         console.error("Failed to load navigation categories", error);
     }
 
-    const sections = [...fallbackSections, ...categories].filter((section, index, list) => {
+    const sections = mergeCategoryList([...fallbackSections, ...categories]).filter((section, index, list) => {
         const key = section.name.toLowerCase();
         return list.findIndex((item) => item.name.toLowerCase() === key || item.slug === section.slug) === index;
     });

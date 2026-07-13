@@ -3,7 +3,7 @@
 // Shows category info + paginated articles in that category.
 // =============================================================================
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import {
     getCategoryBySlug,
@@ -19,6 +19,7 @@ import { ArticleList } from "@/components/shared/article-list";
 import { Pagination } from "@/components/shared/pagination";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { getRssNewsByCategory } from "@/lib/rss-news";
+import { isTechnologyAlias } from "@/lib/category-groups";
 
 // ISR: revalidate category pages once per hour.
 export const revalidate = 3600;
@@ -56,6 +57,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
     const { slug } = await params;
+    if (isTechnologyAlias(slug)) {
+        redirect("/category/technology");
+    }
     const { page } = await searchParams;
     const currentPage = Number(page) || 1;
     const rssArticles = getRssNewsByCategory(slug);
