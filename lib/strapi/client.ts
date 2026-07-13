@@ -16,6 +16,8 @@ interface FetchOptions {
   tags?: string[];
 }
 
+const STRAPI_FETCH_TIMEOUT_MS = 4000;
+
 /**
  * Low-level fetch wrapper for Strapi REST API.
  * All data fetching flows through this single function.
@@ -36,6 +38,9 @@ async function fetchStrapi<T>(
       revalidate,
       tags,
     },
+    // The public site has local editorial fallbacks. A slow or unavailable CMS
+    // must not hold the entire page open indefinitely.
+    signal: AbortSignal.timeout(STRAPI_FETCH_TIMEOUT_MS),
   });
 
   if (!res.ok) {
