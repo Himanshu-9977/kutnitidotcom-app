@@ -11,9 +11,18 @@ import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Twitter } from "lucide-react";
 import { mergeCategoryList } from "@/lib/category-groups";
 
+const fallbackCategories = [
+    { name: "Nepal", slug: "nepal" },
+    { name: "International", slug: "international" },
+    { name: "Economy", slug: "economy" },
+    { name: "Technology", slug: "technology" },
+    { name: "Sports", slug: "sports" },
+    { name: "Opinion", slug: "opinion" },
+];
+
 export async function SiteFooter() {
     const currentYear = new Date().getFullYear();
-    let categories: Array<{ name: string; slug: string }> = [];
+    let categories: Array<{ name: string; slug: string }> = fallbackCategories;
 
     try {
         const categoriesRes = await getCategories();
