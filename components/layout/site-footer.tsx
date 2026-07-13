@@ -9,6 +9,7 @@ import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getCategories } from "@/lib/strapi";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Twitter } from "lucide-react";
+import { mergeCategoryList } from "@/lib/category-groups";
 
 export async function SiteFooter() {
     const currentYear = new Date().getFullYear();
@@ -16,10 +17,10 @@ export async function SiteFooter() {
 
     try {
         const categoriesRes = await getCategories();
-        categories = categoriesRes.data.slice(0, 6).map((category) => ({
+        categories = mergeCategoryList(categoriesRes.data.map((category) => ({
             name: category.name,
             slug: category.slug,
-        }));
+        }))).slice(0, 6);
     } catch (error) {
         console.error("Failed to load footer categories", error);
     }

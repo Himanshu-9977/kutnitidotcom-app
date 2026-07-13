@@ -18,6 +18,7 @@ import { HeroGrid } from "@/components/home/hero-grid";
 import { AdBanner, ArticleList, NewsletterForm } from "@/components/shared";
 import type { ArticleMeta } from "@/lib/types/strapi";
 import { rssNews } from "@/lib/rss-news";
+import { mergeCategoryList } from "@/lib/category-groups";
 
 export const revalidate = 120;
 
@@ -69,12 +70,12 @@ async function getHomeData() {
 
   const categories: HomeCategory[] =
     categoryResult.status === "fulfilled"
-      ? categoryResult.value.data.map((category) => ({
+      ? mergeCategoryList(categoryResult.value.data.map((category) => ({
           id: category.id,
           name: category.name,
           slug: category.slug,
           description: category.description,
-        }))
+        })))
       : [];
 
   return { featured, latest, categories };

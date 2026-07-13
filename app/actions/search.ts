@@ -1,6 +1,7 @@
 "use server";
 
 import { getSearchIndexArticles, getSearchIndexCategories, getSearchIndexAuthors } from "@/lib/strapi/queries";
+import { mergeCategoryList, normalizeCategory } from "@/lib/category-groups";
 
 export interface SearchIndexArticle {
     documentId: string;
@@ -42,13 +43,15 @@ export async function getGlobalSearchIndex(): Promise<GlobalSearchIndex> {
                 documentId: a.documentId,
                 title: a.title,
                 slug: a.slug,
-                category: a.category ? { name: a.category.name } : undefined,
+                category: a.category
+                    ? { name: normalizeCategory(a.category.name, a.category.slug ?? "").name }
+                    : undefined,
             })),
-            categories: categoriesRes.data.map((c) => ({
+            categories: mergeCategoryList(categoriesRes.data.map((c) => ({
                 documentId: c.documentId,
                 name: c.name,
                 slug: c.slug,
-            })),
+            }))),
             authors: authorsRes.data.map((a) => ({
                 documentId: a.documentId,
                 name: a.name,

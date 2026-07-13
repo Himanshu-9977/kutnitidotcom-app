@@ -16,6 +16,7 @@ import type {
   StrapiSingleResponse,
 } from "@/lib/types/strapi";
 import qs from "qs";
+import { getCategoryQuerySlugs, normalizeCategory } from "@/lib/category-groups";
 
 // ---------------------------------------------------------------------------
 // Query string builder (avoids manual string concatenation)
@@ -140,7 +141,7 @@ export async function getArticlesByCategory(
     sort: ["publishedAt:desc"],
     pagination: { page, pageSize: ARTICLES_PER_PAGE },
     filters: {
-      category: { slug: { $eq: categorySlug } },
+      category: { slug: { $in: getCategoryQuerySlugs(categorySlug) } },
       publishedAt: { $notNull: true },
     },
   });
@@ -163,7 +164,7 @@ export async function getRecommendedArticles(
     pagination: { pageSize: 3 },
     filters: {
       slug: { $ne: currentSlug },
-      category: { slug: { $eq: categorySlug } },
+      category: { slug: { $in: getCategoryQuerySlugs(categorySlug) } },
       publishedAt: { $notNull: true },
     },
   });
@@ -273,7 +274,7 @@ export async function getAllCategorySlugs(): Promise<string[]> {
   });
 
   const res = await fetchCollection<Category>("/categories", { query, tags: ["categories"] });
-  return res.data.map((item) => item.slug);
+  return [...new Set(res.data.map((item) => normalizeCategory(item.name, item.slug).slug))];
 }
 
 // ---------------------------------------------------------------------------
