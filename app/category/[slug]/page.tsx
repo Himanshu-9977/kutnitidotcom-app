@@ -23,6 +23,10 @@ import { isTechnologyAlias } from "@/lib/category-groups";
 
 // ISR: revalidate category pages once per hour.
 export const revalidate = 3600;
+// The root layout reads the signed-in session. Category slugs that are not
+// available during build (for example, when Strapi is temporarily offline)
+// must therefore render dynamically instead of falling into a static render.
+export const dynamic = "force-dynamic";
 
 interface PageProps {
     params: Promise<{ slug: string }>;

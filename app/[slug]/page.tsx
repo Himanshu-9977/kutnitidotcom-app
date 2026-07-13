@@ -28,6 +28,11 @@ import { getLikeCount } from "@/app/actions/likes";
 import { getComments } from "@/app/actions/comments";
 import { getRssNewsBySlug } from "@/lib/rss-news";
 
+// Local and newly published article slugs may not exist in Strapi's build-time
+// static params. The shared layout reads the user session, so render these
+// pages dynamically to avoid a DYNAMIC_SERVER_USAGE failure on first request.
+export const dynamic = "force-dynamic";
+
 // ISR: revalidate at most once per hour. All visitors within that window
 // receive the same static HTML — zero extra edge requests per visitor.
 export const revalidate = 3600;
